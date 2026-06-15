@@ -1126,6 +1126,36 @@ function CommandView({activeCards,onCustomize,programId,workflow,triggerWorkflow
   const notifIdRef = useRef(INIT_NOTIFS.length + 1);
   const data = useMemo(()=>genData(programId),[programId]);
 
+  // ── Resizable / collapsible Team Chat column ──
+  const CHAT_MIN = 220, CHAT_MAX = 560, CHAT_DEFAULT = 288;
+  const [chatWidth, setChatWidth] = useState(() => {
+    const s = parseInt(localStorage.getItem("pg_chatWidth"), 10);
+    return (s >= CHAT_MIN && s <= CHAT_MAX) ? s : CHAT_DEFAULT;
+  });
+  const [chatCollapsed, setChatCollapsed] = useState(() => localStorage.getItem("pg_chatCollapsed") === "1");
+  useEffect(() => { localStorage.setItem("pg_chatWidth", String(chatWidth)); }, [chatWidth]);
+  useEffect(() => { localStorage.setItem("pg_chatCollapsed", chatCollapsed ? "1" : "0"); }, [chatCollapsed]);
+
+  function startChatDrag(e) {
+    e.preventDefault();
+    if (chatCollapsed) setChatCollapsed(false);
+    const startX = e.clientX, startW = chatWidth;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    function move(ev) {
+      const w = Math.min(CHAT_MAX, Math.max(CHAT_MIN, startW - (ev.clientX - startX)));
+      setChatWidth(w);
+    }
+    function up() {
+      document.removeEventListener("mousemove", move);
+      document.removeEventListener("mouseup", up);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    }
+    document.addEventListener("mousemove", move);
+    document.addEventListener("mouseup", up);
+  }
+
   function addNotification(notif) {
     if (!notif) return;
     setNotifList(p => [{...notif, id:notifIdRef.current++}, ...p].slice(0,15));
@@ -1146,7 +1176,7 @@ function CommandView({activeCards,onCustomize,programId,workflow,triggerWorkflow
   const cards = activeCards.map(id=>CARD_CATALOG.find(c=>c.id===id)).filter(Boolean);
 
   return (
-    <div style={{flex:1,display:"grid",gridTemplateColumns:"252px 1fr 288px",gap:14,padding:14,overflow:"hidden",minHeight:0}}>
+    <div style={{flex:1,display:"grid",gridTemplateColumns:`252px 1fr 10px ${chatCollapsed?0:chatWidth}px`,gap:14,padding:14,overflow:"hidden",minHeight:0}}>
 
       <HumanLoopPanel notifications={notifList} onReply={handleHumanReply}/>
 
@@ -1168,7 +1198,16 @@ function CommandView({activeCards,onCustomize,programId,workflow,triggerWorkflow
         }
       </div>
 
-      <div style={{height:"100%",overflow:"hidden",minHeight:0}}>
+      <div onMouseDown={startChatDrag}
+           onDoubleClick={()=>setChatCollapsed(c=>!c)}
+           title={chatCollapsed ? "Drag or double-click to open chat" : "Drag to resize · double-click to collapse"}
+           style={{cursor:"col-resize",display:"flex",alignItems:"center",justifyContent:"center",alignSelf:"stretch"}}>
+        <div style={{width:4,height:48,borderRadius:3,background:P.borderHi,transition:"background .15s"}}
+             onMouseEnter={e=>e.currentTarget.style.background=P.cyan}
+             onMouseLeave={e=>e.currentTarget.style.background=P.borderHi}/>
+      </div>
+
+      <div style={{height:"100%",overflow:"hidden",minHeight:0,display:chatCollapsed?"none":"block"}}>
         <TeamChat messages={chatMsgs} onSend={handleSend}/>
       </div>
 

@@ -50,25 +50,39 @@
   </div>
   <div id="root"></div>
 
-  <!-- React, ReactDOM, and Recharts from CDN -->
+  <!-- React, ReactDOM, PropTypes, and Recharts from CDN -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"></script>
+  <!-- Recharts UMD requires a global PropTypes; must load before Recharts -->
+  <script crossorigin src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+  <script crossorigin src="https://unpkg.com/recharts@2.15.0/umd/Recharts.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <!-- Wait for all libraries to load, then load app -->
   <script>
     // Ensure all CDN libraries are loaded before loading app.js
     function checkLibraries() {
-      if (typeof React !== 'undefined' && 
-          typeof ReactDOM !== 'undefined' && 
-          typeof Recharts !== 'undefined' && 
+      if (typeof React !== 'undefined' &&
+          typeof ReactDOM !== 'undefined' &&
+          typeof Recharts !== 'undefined' &&
           typeof Babel !== 'undefined') {
-        // All libraries loaded, now load the app
-        const script = document.createElement('script');
-        script.type = 'text/babel';
-        script.src = 'app.js';
-        document.body.appendChild(script);
+        // All libraries loaded. Babel/standalone only auto-transpiles
+        // text/babel scripts present at page load, so fetch, transform,
+        // and execute app.js explicitly.
+        fetch('app.js')
+          .then(function (res) { return res.text(); })
+          .then(function (src) {
+            var compiled = Babel.transform(src, { presets: ['react'] }).code;
+            (0, eval)(compiled);
+          })
+          .catch(function (err) {
+            console.error('Failed to load app.js:', err);
+            var loadingText = document.getElementById('loading-text');
+            if (loadingText) {
+              loadingText.textContent = 'ERROR: ' + err.message;
+              loadingText.style.color = '#EF4444';
+            }
+          });
       } else {
         // Check again in 100ms
         setTimeout(checkLibraries, 100);
