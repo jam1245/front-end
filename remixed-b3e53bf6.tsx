@@ -601,7 +601,7 @@ function Card({agent,title,icon,wide=false,children}) {
         </div>
         <div style={{display:"flex",alignItems:"center",gap:6}}>
           {onAsk && (
-            <button onClick={()=>onAsk(agent,title)} title={`Ask ${agent.firstName} about ${title}`}
+            <button onClick={(e)=>onAsk(agent,title,{full:e.shiftKey})} title={`Ask ${agent.firstName} about ${title} in the side chat · Shift-click for full Direct Chat`}
               style={{width:26,height:26,borderRadius:99,background:`${agent.color}12`,border:`1px solid ${agent.color}33`,color:agent.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,cursor:"pointer",padding:0,lineHeight:1,transition:"all .14s"}}
               onMouseEnter={e=>{e.currentTarget.style.background=agent.color;e.currentTarget.style.color="#fff";}}
               onMouseLeave={e=>{e.currentTarget.style.background=`${agent.color}12`;e.currentTarget.style.color=agent.color;}}>⚡</button>
@@ -899,7 +899,25 @@ const REPLIES = [
 ];
 let replyIdx = 0;
 
-function TeamChat({ messages, onSend }) {
+// Card-aware replies so each agent answers in-domain when the ⚡ on a card
+// is clicked. Falls back to the shared REPLIES rotation for any agent missing.
+const AGENT_CARD_REPLIES = {
+  larry: t => `On "${t}" — I've got the team aligned. Peter's tracking the cost signal and Ronnie's watching exposure. Want me to convene a quick recovery huddle?`,
+  bea:   t => `For "${t}", the portfolio read is what matters: this rolls up into the monthly brief. I can frame the executive narrative and flag the funding impact.`,
+  peter: t => `"${t}" is driven by labor variance on WBS 3.2 — CPI is 0.93 and trending down, EAC $136M vs $128M BAC. Recommend a formal EAC review. Want the what-if?`,
+  eddie: t => `I pulled the source docs behind "${t}". The latest contract amendment and CAM notes are filed — I can surface the exact references for the audit trail.`,
+  ivy:   t => `On "${t}": MS-14 has a 9-day slip and Subsystem Integration is now the critical-path driver. I can model two recovery options against current float.`,
+  connie:t => `"${t}" ties to the CDRL chain — A024 is the one to watch, due in 8 days and currently amber. I'll coordinate with the customer; want me to draft the note?`,
+  tony:  t => `For "${t}", ICD-007 is amber and the test-readiness gate is the risk. Requirements burndown is tracking — I can convene the interface team for disposition.`,
+  sully: t => `"${t}" points at the supplier side — Northrop delivery is the long pole. I'm escalating with their PM; I can update the delivery risk register today.`,
+  ronnie:t => `"${t}" maps to R-07, our top exposure at ~$2.1M with three mitigations past due. Recommend escalating to the Risk Review Board — want me to log it?`,
+};
+function cardReply(agent, title) {
+  const fn = AGENT_CARD_REPLIES[agent.id];
+  return fn ? fn(title) : REPLIES[replyIdx++ % REPLIES.length];
+}
+
+function TeamChat({ messages, onSend, flash }) {
   const [input, setInput] = useState("");
   const [foc,   setFoc]   = useState(false);
   const botRef = useRef(null);
@@ -908,7 +926,7 @@ function TeamChat({ messages, onSend }) {
   function send() { if (!input.trim()) return; onSend(input); setInput(""); }
 
   return (
-    <div style={{background:P.panel,border:`1px solid ${P.border}`,borderRadius:RR,display:"flex",flexDirection:"column",height:"100%",position:"relative",overflow:"hidden",boxShadow:SH}}>
+    <div style={{background:P.panel,border:`1px solid ${flash?P.cyan:P.border}`,borderRadius:RR,display:"flex",flexDirection:"column",height:"100%",position:"relative",overflow:"hidden",boxShadow:flash?`0 0 0 3px ${P.cyan}44, ${SH}`:SH,transition:"box-shadow .25s, border-color .25s"}}>
       <Corners c={P.cyan} i={8}/>
       <div style={{padding:"13px 16px 11px",borderBottom:`1px solid ${P.border}`,flexShrink:0}}>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:5}}>
@@ -1128,7 +1146,7 @@ function Header({view,onNav,programId,setProgramId}) {
 }
 
 // ─── VIEWS ────────────────────────────────────────────────
-function CommandView({activeCards,onCustomize,programId,workflow,triggerWorkflow,onAskCard}) {
+function CommandView({activeCards,onCustomize,programId,workflow,triggerWorkflow,onAskCardFull}) {
   const [chatMsgs,    setChatMsgs]    = useState(INIT_CHAT);
   const [notifList,   setNotifList]   = useState(INIT_NOTIFS);
   const notifIdRef = useRef(INIT_NOTIFS.length + 1);
@@ -1181,6 +1199,23 @@ function CommandView({activeCards,onCustomize,programId,workflow,triggerWorkflow
     setTimeout(()=>setChatMsgs(p=>[...p,{agentId:"larry",time:"Just now",text:REPLIES[replyIdx++%REPLIES.length]}]), 6500);
   }
 
+  // ── Card ⚡ → ask that card's agent in the side Team Chat ──
+  const [chatFlash, setChatFlash] = useState(false);
+  const flashRef = useRef(null);
+  function askCardInChat(agent, title, opts) {
+    // Shift-click escalates to the full Direct Chat page instead.
+    if (opts && opts.full) { onAskCardFull && onAskCardFull(agent, title); return; }
+    if (chatCollapsed) setChatCollapsed(false);
+    const q = `Walk me through the "${title}" card — what's driving these numbers, and what should I act on?`;
+    setChatMsgs(p => [...p, {agentId:"user", time:"Just now", text:q}]);
+    triggerWorkflow("chatMessage");
+    setTimeout(() => setChatMsgs(p => [...p, {agentId:agent.id, time:"Just now", text:cardReply(agent, title)}]), 900);
+    // Flash the chat panel so it's obvious where the answer landed.
+    setChatFlash(true);
+    clearTimeout(flashRef.current);
+    flashRef.current = setTimeout(() => setChatFlash(false), 1200);
+  }
+
   const cards = activeCards.map(id=>CARD_CATALOG.find(c=>c.id===id)).filter(Boolean);
 
   return (
@@ -1200,7 +1235,7 @@ function CommandView({activeCards,onCustomize,programId,workflow,triggerWorkflow
               <div style={{fontSize:14,fontWeight:600,color:P.t0,marginBottom:6}}>No cards selected</div>
               <button onClick={onCustomize} style={{fontSize:12,fontWeight:600,padding:"10px 22px",borderRadius:8,border:"none",background:P.cyan,color:"white",cursor:"pointer",marginTop:8}}>⚙ CUSTOMIZE</button>
             </div>
-          : <CardAskCtx.Provider value={onAskCard}>
+          : <CardAskCtx.Provider value={askCardInChat}>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
                 {cards.map(c=><c.Comp key={c.id} data={data}/>)}
               </div>
@@ -1218,7 +1253,7 @@ function CommandView({activeCards,onCustomize,programId,workflow,triggerWorkflow
       </div>
 
       <div style={{height:"100%",overflow:"hidden",minHeight:0,display:chatCollapsed?"none":"block"}}>
-        <TeamChat messages={chatMsgs} onSend={handleSend}/>
+        <TeamChat messages={chatMsgs} onSend={handleSend} flash={chatFlash}/>
       </div>
 
     </div>
@@ -1487,7 +1522,7 @@ export default function App() {
       <GridBg o={0.5}/>
       <div style={{position:"relative",display:"flex",flexDirection:"column",height:"100%",zIndex:1}}>
         <Header view={view} onNav={setView} programId={programId} setProgramId={switchProgram}/>
-        {view==="command"  && <CommandView activeCards={activeCards} onCustomize={()=>{setDrawerOpen(true);triggerWorkflow("customize");}} programId={programId} workflow={workflow} triggerWorkflow={triggerWorkflow} onAskCard={askAgentAboutCard}/>}
+        {view==="command"  && <CommandView activeCards={activeCards} onCustomize={()=>{setDrawerOpen(true);triggerWorkflow("customize");}} programId={programId} workflow={workflow} triggerWorkflow={triggerWorkflow} onAskCardFull={askAgentAboutCard}/>}
         {view==="team"     && <TeamView onChat={a=>{setChatAgent(a);setChatAsk(null);setView("chat");}}/>}
         {view==="autonomy" && <AutonomyView/>}
         {view==="chat"     && <DirectChatView initial={chatAgent} ask={chatAsk}/>}
