@@ -1,11 +1,12 @@
-﻿// Program Guardian - Application Code
+// Program Guardian - Application Code
 // Auto-generated from remixed-b3e53bf6.tsx
 
 const { useState, useMemo, useRef, useEffect } = React;
 const { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, BarChart, Bar, Cell } = Recharts;
 
 
-// â”€â”€â”€ PALETTE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+// ─── PALETTE ──────────────────────────────────────────────
 const P = {
   bg0:"#EAF1FB",bg1:"#F0F5FC",bg2:"#FFFFFF",bg3:"#F6FAFE",bg4:"#E8F0FA",
   panel:"#FFFFFF",border:"rgba(59,130,246,0.18)",borderHi:"rgba(59,130,246,0.45)",
@@ -16,21 +17,21 @@ const P = {
   t0:"#0F172A",t1:"#1E293B",t2:"#475569",t3:"#64748B",
 };
 
-// â”€â”€â”€ AGENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── AGENTS ───────────────────────────────────────────────
 const AGENTS = [
-  {id:"larry", firstName:"Larry", name:"Program Guardian",      role:"Lead Orchestrator",       persona:"Calm and decisive â€” anchors the team and routes every call.",       color:P.cyan,    lead:true,  avatar:{skin:"#F0D4B5",hair:"#1A1410",armor:"#E8F4FF",armorDark:"#4A6FA8",trim:P.cyan,   eye:"#1D4ED8",gender:"m"},tags:["Orchestration","Routing","Synthesis"]},
-  {id:"bea",   firstName:"Bea",   name:"Business Acumen Suite", role:"Strategy & Finance",      persona:"The executive translator â€” turns data into narrative.",            color:P.blue,    avatar:{skin:"#E8C4A0",hair:"#8B4513",armor:"#DCE8F5",armorDark:"#3B5A8C",trim:P.blue,  eye:"#2563EB",gender:"f"},tags:["EVM","Portfolio","Brief"]},
-  {id:"peter", firstName:"Peter", name:"Program Health Agent",  role:"Budget & Forecast",       persona:"Analytical â€” watches the numbers and raises early warnings.",       color:P.emerald, avatar:{skin:"#F5D2A8",hair:"#3C2415",armor:"#D4E8DC",armorDark:"#2C5A48",trim:P.emerald,eye:"#059669",gender:"m"},tags:["CPI/SPI","EAC","Forecast"]},
-  {id:"eddie", firstName:"Eddie", name:"Program Expert Agent",  role:"Domain Knowledge",        persona:"Institutional memory â€” deep recall of every document.",            color:P.violet,  avatar:{skin:"#E8B89A",hair:"#1C1C1C",armor:"#DCD4F0",armorDark:"#3B2868",trim:P.violet, eye:"#7C3AED",gender:"m"},tags:["RAG","Insights","Context"]},
+  {id:"larry", firstName:"Larry", name:"Program Guardian",      role:"Lead Orchestrator",       persona:"Calm and decisive — anchors the team and routes every call.",       color:P.cyan,    lead:true,  avatar:{skin:"#F0D4B5",hair:"#1A1410",armor:"#E8F4FF",armorDark:"#4A6FA8",trim:P.cyan,   eye:"#1D4ED8",gender:"m"},tags:["Orchestration","Routing","Synthesis"]},
+  {id:"bea",   firstName:"Bea",   name:"Business Acumen Suite", role:"Strategy & Finance",      persona:"The executive translator — turns data into narrative.",            color:P.blue,    avatar:{skin:"#E8C4A0",hair:"#8B4513",armor:"#DCE8F5",armorDark:"#3B5A8C",trim:P.blue,  eye:"#2563EB",gender:"f"},tags:["EVM","Portfolio","Brief"]},
+  {id:"peter", firstName:"Peter", name:"Program Health Agent",  role:"Budget & Forecast",       persona:"Analytical — watches the numbers and raises early warnings.",       color:P.emerald, avatar:{skin:"#F5D2A8",hair:"#3C2415",armor:"#D4E8DC",armorDark:"#2C5A48",trim:P.emerald,eye:"#059669",gender:"m"},tags:["CPI/SPI","EAC","Forecast"]},
+  {id:"eddie", firstName:"Eddie", name:"Program Expert Agent",  role:"Domain Knowledge",        persona:"Institutional memory — deep recall of every document.",            color:P.violet,  avatar:{skin:"#E8B89A",hair:"#1C1C1C",armor:"#DCD4F0",armorDark:"#3B2868",trim:P.violet, eye:"#7C3AED",gender:"m"},tags:["RAG","Insights","Context"]},
   {id:"ivy",   firstName:"Ivy",   name:"IMS Agent",             role:"Schedule & Timeline",     persona:"Schedule-focused and blunt about slips.",                          color:P.electric,avatar:{skin:"#D4A574",hair:"#5C2D1A",armor:"#D0E8F0",armorDark:"#1E4A6C",trim:P.electric,eye:"#0EA5E9",gender:"f"},tags:["IMS","Float","Milestones"]},
-  {id:"connie",firstName:"Connie",name:"Contracts Agent",       role:"Customer & Deliverables", persona:"Formal and deadline-aware â€” deliverable-obsessed.",               color:P.amber,   avatar:{skin:"#FAEBD7",hair:"#2D1810",armor:"#F0E4C8",armorDark:"#6C4A00",trim:P.amber,  eye:"#92400E",gender:"f"},tags:["CDRLs","Milestones","Compliance"]},
-  {id:"tony",  firstName:"Tony",  name:"Techie Agent",          role:"Tech & Systems",          persona:"Engineering voice â€” talks reqs, test, and interfaces.",            color:P.pink,    avatar:{skin:"#F0C8A0",hair:"#0F1024",armor:"#F0D4E0",armorDark:"#5C0A28",trim:P.pink,   eye:"#DB2777",gender:"m"},tags:["Requirements","Test","ICD"]},
-  {id:"sully", firstName:"Sully", name:"Ops Supply Chain",      role:"Logistics & Resources",   persona:"Pragmatic â€” supplier-focused, sees the chain end-to-end.",         color:P.gold,    avatar:{skin:"#C8956C",hair:"#2C1F18",armor:"#F0E0C0",armorDark:"#5C3A00",trim:P.gold,   eye:"#B45309",gender:"m"},tags:["Suppliers","Delivery","Resources"]},
-  {id:"ronnie",firstName:"Ronnie",name:"ROADS Agent",           role:"Risk & Mitigation",       persona:"Risk-first mindset â€” always tracking exposure.",                   color:P.rose,    avatar:{skin:"#E8D0BC",hair:"#3C1810",armor:"#F0D4D8",armorDark:"#5C0A1C",trim:P.rose,   eye:"#BE123C",gender:"f"},tags:["Risk","Alerts","Mitigation"]},
+  {id:"connie",firstName:"Connie",name:"Contracts Agent",       role:"Customer & Deliverables", persona:"Formal and deadline-aware — deliverable-obsessed.",               color:P.amber,   avatar:{skin:"#FAEBD7",hair:"#2D1810",armor:"#F0E4C8",armorDark:"#6C4A00",trim:P.amber,  eye:"#92400E",gender:"f"},tags:["CDRLs","Milestones","Compliance"]},
+  {id:"tony",  firstName:"Tony",  name:"Techie Agent",          role:"Tech & Systems",          persona:"Engineering voice — talks reqs, test, and interfaces.",            color:P.pink,    avatar:{skin:"#F0C8A0",hair:"#0F1024",armor:"#F0D4E0",armorDark:"#5C0A28",trim:P.pink,   eye:"#DB2777",gender:"m"},tags:["Requirements","Test","ICD"]},
+  {id:"sully", firstName:"Sully", name:"Ops Supply Chain",      role:"Logistics & Resources",   persona:"Pragmatic — supplier-focused, sees the chain end-to-end.",         color:P.gold,    avatar:{skin:"#C8956C",hair:"#2C1F18",armor:"#F0E0C0",armorDark:"#5C3A00",trim:P.gold,   eye:"#B45309",gender:"m"},tags:["Suppliers","Delivery","Resources"]},
+  {id:"ronnie",firstName:"Ronnie",name:"ROADS Agent",           role:"Risk & Mitigation",       persona:"Risk-first mindset — always tracking exposure.",                   color:P.rose,    avatar:{skin:"#E8D0BC",hair:"#3C1810",armor:"#F0D4D8",armorDark:"#5C0A1C",trim:P.rose,   eye:"#BE123C",gender:"f"},tags:["Risk","Alerts","Mitigation"]},
 ];
 const getAgent = (id) => AGENTS.find(a => a.id === id);
 
-// â”€â”€â”€ HUMAN COUNTERPARTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── HUMAN COUNTERPARTS ───────────────────────────────────
 const HUMANS = {
   larry: {name:"Col. R. Mitchell",title:"Program Manager",            initials:"RM",color:"#2563EB",ch:"#pg-program-mgmt"},
   bea:   {name:"S. Thornton",     title:"Finance & Strategy Lead",    initials:"ST",color:"#3B82F6",ch:"#pg-finance"},
@@ -44,9 +45,9 @@ const HUMANS = {
 };
 
 const QUICK_REPLIES = {
-  larry: ["Understood. Calling a recovery meeting at 0900 tomorrow. All agents â€” continue analysis.","Got the escalation. I'll brief the customer today. Agents â€” maintain current posture."],
+  larry: ["Understood. Calling a recovery meeting at 0900 tomorrow. All agents — continue analysis.","Got the escalation. I'll brief the customer today. Agents — maintain current posture."],
   bea:   ["Portfolio impact noted. I'll update the roll-up for the next monthly brief.","Financial picture aligns. Please proceed and route findings through normal channels."],
-  peter: ["I've reviewed the numbers. Labor variance is real â€” confirm with the CAMs and proceed.","Understood. Finalize the EAC and flag for formal rebaseline review. I'll approve."],
+  peter: ["I've reviewed the numbers. Labor variance is real — confirm with the CAMs and proceed.","Understood. Finalize the EAC and flag for formal rebaseline review. I'll approve."],
   eddie: ["Document index looks current. I'll validate the latest contract amendments are filed.","Confirmed. Continue the archive search and route any gaps to the team."],
   ivy:   ["Schedule slip is on my radar. I'll coordinate recovery options with the scheduler today.","Confirmed. Flag any additional float impacts immediately. I'll brief the PMR team."],
   connie:["CDRL chain reviewed. I'll coordinate directly with the customer on A024 today.","Acknowledged. Continue tracking and alert me immediately if further slips are identified."],
@@ -72,7 +73,7 @@ function makeNotif(seq) {
     agentId: seq.from,
     time: t,
     subject: useEmail
-      ? `[PG] ${isEsc ? "Escalation â€” PM Attention Required" : `Task: ${toAg.firstName} the ${toAg.role}`}`
+      ? `[PG] ${isEsc ? "Escalation — PM Attention Required" : `Task: ${toAg.firstName} the ${toAg.role}`}`
       : (HUMANS[humanId] ? HUMANS[humanId].ch : "#pg-general"),
     message: isEsc
       ? `${fromAg.firstName} the ${fromAg.role} requires PM-level decision. ${seq.text || ""}. Your direction is requested.`
@@ -83,13 +84,13 @@ function makeNotif(seq) {
 }
 
 const INIT_NOTIFS = [
-  {id:1,type:"email", humanId:"peter", agentId:"larry",time:"10:15",subject:"[PG] Morning Cost Review â€” Action Required",  message:"Peter the Program Health Agent has been activated for daily cost analysis on WBS 3.2. EAC variance flagged. Please validate cost baseline and coordinate with your CAMs.",        status:"read",      replied:false},
-  {id:2,type:"teams", humanId:"ronnie",agentId:"larry",time:"10:16",subject:"#pg-risk",                                    message:"@a.garcia â€” Ronnie the ROADS Agent is updating R-07. $1.2M exposure identified. Risk Manager review requested â€” please confirm mitigation status and timeline.",    status:"delivered", replied:false},
-  {id:3,type:"teams", humanId:"ivy",   agentId:"larry",time:"10:16",subject:"#pg-schedule",                                message:"@j.torres â€” Ivy the IMS Agent flagged a critical path shift. Subsystem Integration is now the driver, MS-14 has a 9-day slip. IMS baseline review required.",      status:"delivered", replied:false},
-  {id:4,type:"email", humanId:"connie",agentId:"larry",time:"10:17",subject:"[PG] CDRL Review Required â€” A012 & A024",     message:"Connie the Contracts Agent has been tasked with CDRL chain review. A024 flagged overdue. Contracts Manager coordination with the customer may be required.",      status:"sent",      replied:false},
+  {id:1,type:"email", humanId:"peter", agentId:"larry",time:"10:15",subject:"[PG] Morning Cost Review — Action Required",  message:"Peter the Program Health Agent has been activated for daily cost analysis on WBS 3.2. EAC variance flagged. Please validate cost baseline and coordinate with your CAMs.",        status:"read",      replied:false},
+  {id:2,type:"teams", humanId:"ronnie",agentId:"larry",time:"10:16",subject:"#pg-risk",                                    message:"@a.garcia — Ronnie the ROADS Agent is updating R-07. $1.2M exposure identified. Risk Manager review requested — please confirm mitigation status and timeline.",    status:"delivered", replied:false},
+  {id:3,type:"teams", humanId:"ivy",   agentId:"larry",time:"10:16",subject:"#pg-schedule",                                message:"@j.torres — Ivy the IMS Agent flagged a critical path shift. Subsystem Integration is now the driver, MS-14 has a 9-day slip. IMS baseline review required.",      status:"delivered", replied:false},
+  {id:4,type:"email", humanId:"connie",agentId:"larry",time:"10:17",subject:"[PG] CDRL Review Required — A012 & A024",     message:"Connie the Contracts Agent has been tasked with CDRL chain review. A024 flagged overdue. Contracts Manager coordination with the customer may be required.",      status:"sent",      replied:false},
 ];
 
-// â”€â”€â”€ ANIMATION CSS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── ANIMATION CSS ────────────────────────────────────────
 const ANIMS = `
 @keyframes pgDot{0%,80%,100%{opacity:.3;transform:scale(.7)}40%{opacity:1;transform:scale(1)}}
 @keyframes pgBubble{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
@@ -106,7 +107,7 @@ const ANIMS = `
 @keyframes pgPop{0%{opacity:0;transform:scale(.88)}100%{opacity:1;transform:scale(1)}}
 `;
 
-// â”€â”€â”€ AVATAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── AVATAR ───────────────────────────────────────────────
 function lighten(hex,a){const n=parseInt(hex.replace("#",""),16);return`#${[Math.min(255,((n>>16)&255)+a),Math.min(255,((n>>8)&255)+a),Math.min(255,(n&255)+a)].map(v=>v.toString(16).padStart(2,"0")).join("")}`}
 function darken(hex,a){const n=parseInt(hex.replace("#",""),16);return`#${[Math.max(0,((n>>16)&255)-a),Math.max(0,((n>>8)&255)-a),Math.max(0,(n&255)-a)].map(v=>v.toString(16).padStart(2,"0")).join("")}`}
 function hexPts(cx,cy,r,s){const p=[];for(let i=0;i<s;i++){const a=(Math.PI*2*i)/s-Math.PI/2;p.push(`${cx+r*Math.cos(a)},${cy+r*Math.sin(a)}`)}return p.join(" ")}
@@ -160,19 +161,19 @@ function Avatar({ agent, size=56, glow=true, active=false, calling=false, framed
   );
 }
 
-// â”€â”€â”€ HUMAN BADGE (distinct from armored avatars) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── HUMAN BADGE (distinct from armored avatars) ──────────
 function HumanBadge({ humanId, size=32 }) {
   const h = HUMANS[humanId];
   if (!h) return null;
   return (
     <div style={{width:size,height:size,borderRadius:Math.round(size*.3),background:`${h.color}15`,border:`1.5px solid ${h.color}55`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:Math.round(size*.32),fontWeight:700,color:h.color,flexShrink:0,letterSpacing:"-.01em",position:"relative"}}>
       {h.initials}
-      <div style={{position:"absolute",bottom:-2,right:-2,width:Math.round(size*.3),height:Math.round(size*.3),borderRadius:99,background:P.emerald,border:"1px solid white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:Math.round(size*.16)}}>ðŸ‘¤</div>
+      <div style={{position:"absolute",bottom:-2,right:-2,width:Math.round(size*.3),height:Math.round(size*.3),borderRadius:99,background:P.emerald,border:"1px solid white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:Math.round(size*.16)}}>👤</div>
     </div>
   );
 }
 
-// â”€â”€â”€ ACTIVITY ANIMATIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── ACTIVITY ANIMATIONS ──────────────────────────────────
 function Anim({ agent, type, size=44 }) {
   return (
     <div style={{position:"relative",width:size,height:size,display:"inline-block"}}>
@@ -216,7 +217,7 @@ function Anim({ agent, type, size=44 }) {
   );
 }
 
-// â”€â”€â”€ SHARED PRIMITIVES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── SHARED PRIMITIVES ────────────────────────────────────
 const SH = "0 1px 3px rgba(15,23,42,.04),0 4px 12px rgba(37,99,235,.06)";
 const RR = 14;
 function GridBg({o=1}){return <div style={{position:"absolute",inset:0,pointerEvents:"none",opacity:o,backgroundImage:`linear-gradient(${P.cyan}0A 1px,transparent 1px),linear-gradient(90deg,${P.cyan}0A 1px,transparent 1px)`,backgroundSize:"40px 40px"}}/>;}
@@ -232,7 +233,7 @@ function Corners({c=P.cyan,s=10,i=0,o=.35}){
   );
 }
 
-// â”€â”€â”€ WAR ROOM DATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── WAR ROOM DATA ────────────────────────────────────────
 const IDLE_ST = {
   larry: ["Coordinating daily sync","Monitoring all channels","Routing team queries"],
   bea:   ["Refreshing portfolio view","Reviewing EVM data","Preparing quad slide"],
@@ -245,16 +246,16 @@ const IDLE_ST = {
   ronnie:["Updating risk register","Burning down R-14","Tracking open issues"],
 };
 const CALL_SEQS = [
-  {from:"larry", to:"peter",  text:"Larry calling Peter the Program Health Agent â€” pull the EAC delta on WBS 3.2"},
+  {from:"larry", to:"peter",  text:"Larry calling Peter the Program Health Agent — pull the EAC delta on WBS 3.2"},
   {from:"larry", to:"ronnie", text:"Larry routing R-07 to Ronnie the ROADS Agent"},
   {from:"larry", to:"ivy",    text:"Larry asking Ivy the IMS Agent for a critical path update"},
   {from:"peter", to:"bea",    text:"Peter the Program Health Agent routing EAC projection to Bea the Business Acumen Agent"},
-  {from:"ivy",   to:"larry",  text:"Ivy the IMS Agent flagging MS-14 slip â€” 9 days â€” escalating to Larry"},
-  {from:"ronnie",to:"larry",  text:"Ronnie the ROADS Agent surfacing R-07 exposure â€” PM attention needed"},
-  {from:"connie",to:"larry",  text:"Connie the Contracts Agent reporting A024 overdue â€” flagging to Larry"},
+  {from:"ivy",   to:"larry",  text:"Ivy the IMS Agent flagging MS-14 slip — 9 days — escalating to Larry"},
+  {from:"ronnie",to:"larry",  text:"Ronnie the ROADS Agent surfacing R-07 exposure — PM attention needed"},
+  {from:"connie",to:"larry",  text:"Connie the Contracts Agent reporting A024 overdue — flagging to Larry"},
   {from:"larry", to:"sully",  text:"Larry asking Sully the Supply Chain Agent to verify Northrop sensor delivery"},
   {from:"larry", to:"connie", text:"Larry routing CDRL schedule request to Connie the Contracts Agent"},
-  {from:"tony",  to:"larry",  text:"Tony the Techie Agent reporting ICD-007 amber â€” routing to Larry"},
+  {from:"tony",  to:"larry",  text:"Tony the Techie Agent reporting ICD-007 amber — routing to Larry"},
 ];
 const ANIM_POOL = ["thinking","computing","working","talking","alerting","synthesizing","querying","reviewing"];
 
@@ -273,8 +274,8 @@ function WarRoomPanel({ workflow, onWorkflowDone, onNotify }) {
         const seq = CALL_SEQS[Math.floor(Math.random()*CALL_SEQS.length)];
         setCallSeq(seq); setCallText(seq.text);
         setStatuses(p => ({...p,
-          [seq.from]:{anim:"calling",  text:`Calling ${getAgent(seq.to).firstName}â€¦`},
-          [seq.to]:  {anim:"thinking", text:`Receiving from ${getAgent(seq.from).firstName}â€¦`},
+          [seq.from]:{anim:"calling",  text:`Calling ${getAgent(seq.to).firstName}…`},
+          [seq.to]:  {anim:"thinking", text:`Receiving from ${getAgent(seq.from).firstName}…`},
         }));
         if (onNotify) { const n=makeNotif(seq); if(n) onNotify(n); }
         setTimeout(() => {
@@ -329,11 +330,11 @@ function WarRoomPanel({ workflow, onWorkflowDone, onNotify }) {
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           <div style={{width:8,height:8,borderRadius:99,background:workflow?P.cyan:P.emerald,animation:"pgBlink 1.2s ease-in-out infinite"}}/>
-          <span style={{fontSize:10.5,fontWeight:700,letterSpacing:".15em",color:workflow?P.cyan:P.t2,textTransform:"uppercase"}}>{workflow?"â— Team Executing":"War Room Â· All Agents Live"}</span>
+          <span style={{fontSize:10.5,fontWeight:700,letterSpacing:".15em",color:workflow?P.cyan:P.t2,textTransform:"uppercase"}}>{workflow?"● Team Executing":"War Room · All Agents Live"}</span>
         </div>
         {workflow
           ? <div style={{display:"flex",gap:3}}>{workflow.map((_,i)=><div key={i} style={{width:18,height:3,borderRadius:99,background:i<=wfStep?P.cyan:P.bg4,transition:"background .3s"}}/>)}</div>
-          : <span style={{fontSize:9.5,color:P.t3}}>9 AGENTS Â· 9 HUMAN COUNTERPARTS</span>
+          : <span style={{fontSize:9.5,color:P.t3}}>9 AGENTS · 9 HUMAN COUNTERPARTS</span>
         }
       </div>
 
@@ -341,10 +342,10 @@ function WarRoomPanel({ workflow, onWorkflowDone, onNotify }) {
       <div style={{display:"flex",alignItems:"center",gap:16,marginBottom:12,padding:"10px 14px",background:`${P.cyan}08`,borderRadius:10,border:`1px solid ${P.cyan}33`}}>
         <div style={{position:"relative"}}>
           <Anim agent={larry} type={larrySt.anim} size={58}/>
-          {larrySt.anim==="calling" && <div style={{position:"absolute",right:-6,top:"50%",fontSize:18,color:P.cyan,animation:"pgArrow .9s ease-in-out infinite",transform:"translateY(-50%)"}}>â†’</div>}
+          {larrySt.anim==="calling" && <div style={{position:"absolute",right:-6,top:"50%",fontSize:18,color:P.cyan,animation:"pgArrow .9s ease-in-out infinite",transform:"translateY(-50%)"}}>→</div>}
         </div>
         <div style={{flex:1,minWidth:0}}>
-          <div style={{fontSize:16,fontWeight:700,color:P.t0}}><span style={{color:P.cyan}}>Larry</span> Â· Lead Program Guardian</div>
+          <div style={{fontSize:16,fontWeight:700,color:P.t0}}><span style={{color:P.cyan}}>Larry</span> · Lead Program Guardian</div>
           <div style={{fontSize:12,color:P.t2,marginTop:2,fontStyle:"italic"}}>{larrySt.text}</div>
           {callText && <div style={{marginTop:5,fontSize:11.5,fontWeight:600,color:P.cyan,animation:"pgFadeUp .4s ease-out"}}>{callText}<span style={{display:"inline-block",width:6,height:12,background:P.cyan,marginLeft:4,animation:"pgBlink .8s ease-in-out infinite",verticalAlign:"middle",borderRadius:1}}/></div>}
         </div>
@@ -365,8 +366,8 @@ function WarRoomPanel({ workflow, onWorkflowDone, onNotify }) {
             <div key={a.id} style={{background:isInCall?`${a.color}10`:P.bg3,border:`1px solid ${isInCall?a.color+"44":P.border}`,borderRadius:10,padding:"9px 7px",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .25s",position:"relative"}}>
               <div style={{position:"relative"}}>
                 <Anim agent={a} type={st.anim} size={40}/>
-                {isInCall&&callSeq.from===a.id && <div style={{position:"absolute",right:-8,top:"50%",fontSize:14,color:a.color,animation:"pgArrow .9s ease-in-out infinite",transform:"translateY(-50%)"}}>â†’</div>}
-                {isInCall&&callSeq.to===a.id   && <div style={{position:"absolute",left:-10,top:"50%",fontSize:12,color:a.color,opacity:.8,transform:"translateY(-50%)"}}>â†</div>}
+                {isInCall&&callSeq.from===a.id && <div style={{position:"absolute",right:-8,top:"50%",fontSize:14,color:a.color,animation:"pgArrow .9s ease-in-out infinite",transform:"translateY(-50%)"}}>→</div>}
+                {isInCall&&callSeq.to===a.id   && <div style={{position:"absolute",left:-10,top:"50%",fontSize:12,color:a.color,opacity:.8,transform:"translateY(-50%)"}}>←</div>}
               </div>
               <div style={{textAlign:"center"}}>
                 <div style={{fontSize:11.5,fontWeight:700,color:a.color,lineHeight:1.2}}>{a.firstName}</div>
@@ -389,8 +390,8 @@ function WarRoomPanel({ workflow, onWorkflowDone, onNotify }) {
   );
 }
 
-// â”€â”€â”€ LIVE TICKER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const TICKER = ["Larry coordinating daily sync","Peter the Program Health Agent flagging EAC variance Â· S. Kim notified","Ronnie the ROADS Agent updated R-07 Â· A. Garcia notified via Teams","Ivy the IMS Agent: MS-14 shifted 9 days Â· J. Torres notified","Connie the Contracts Agent: CDRL A024 due in 3 days Â· M. Walsh notified","Bea the Business Acumen Agent synthesizing portfolio brief","Eddie the Program Expert indexed 4 new contract amendments","Sully the Supply Chain Agent checking Northrop Â· B. Davis notified","Col. R. Mitchell replied to Larry Â· recovery meeting set 0900","S. Kim replied to Peter the Program Health Agent â€” EAC baseline confirmed","A. Garcia replied to Ronnie the ROADS Agent â€” R-07 mitigation prioritized"];
+// ─── LIVE TICKER ──────────────────────────────────────────
+const TICKER = ["Larry coordinating daily sync","Peter the Program Health Agent flagging EAC variance · S. Kim notified","Ronnie the ROADS Agent updated R-07 · A. Garcia notified via Teams","Ivy the IMS Agent: MS-14 shifted 9 days · J. Torres notified","Connie the Contracts Agent: CDRL A024 due in 3 days · M. Walsh notified","Bea the Business Acumen Agent synthesizing portfolio brief","Eddie the Program Expert indexed 4 new contract amendments","Sully the Supply Chain Agent checking Northrop · B. Davis notified","Col. R. Mitchell replied to Larry · recovery meeting set 0900","S. Kim replied to Peter the Program Health Agent — EAC baseline confirmed","A. Garcia replied to Ronnie the ROADS Agent — R-07 mitigation prioritized"];
 function LiveTicker() {
   const items = [...TICKER,...TICKER];
   return (
@@ -399,7 +400,7 @@ function LiveTicker() {
         <div style={{background:P.cyan,color:"#fff",fontSize:9.5,fontWeight:700,padding:"3px 10px",letterSpacing:".14em",flexShrink:0}}>LIVE</div>
         <div style={{flex:1,overflow:"hidden"}}>
           <div style={{display:"flex",whiteSpace:"nowrap",animation:"pgTicker 80s linear infinite"}}>
-            {items.map((t,i)=><span key={i} style={{fontSize:11,color:P.t2,padding:"0 28px",display:"inline-flex",alignItems:"center",gap:8}}><span style={{color:P.cyan,fontSize:8}}>â—</span>{t}</span>)}
+            {items.map((t,i)=><span key={i} style={{fontSize:11,color:P.t2,padding:"0 28px",display:"inline-flex",alignItems:"center",gap:8}}><span style={{color:P.cyan,fontSize:8}}>●</span>{t}</span>)}
           </div>
         </div>
       </div>
@@ -407,7 +408,7 @@ function LiveTicker() {
   );
 }
 
-// â”€â”€â”€ HUMAN LOOP PANEL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── HUMAN LOOP PANEL ─────────────────────────────────────
 function HumanLoopPanel({ notifications, onReply }) {
   const [notifs,     setNotifs]     = useState(notifications);
   const [replyId,    setReplyId]    = useState(null);
@@ -432,11 +433,11 @@ function HumanLoopPanel({ notifications, onReply }) {
       {/* header */}
       <div style={{padding:"13px 14px 10px",borderBottom:`1px solid ${P.border}`,flexShrink:0}}>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:5}}>
-          <div style={{width:26,height:26,borderRadius:7,background:"#10B98115",border:"1px solid #10B98133",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13}}>ðŸ‘¥</div>
+          <div style={{width:26,height:26,borderRadius:7,background:"#10B98115",border:"1px solid #10B98133",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13}}>👥</div>
           <span style={{fontSize:12,fontWeight:700,letterSpacing:".1em",color:P.emerald,textTransform:"uppercase"}}>Human Loop</span>
           {unread>0 && <div style={{marginLeft:"auto",width:18,height:18,borderRadius:99,background:P.rose,color:"#fff",fontSize:10,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center"}}>{unread}</div>}
         </div>
-        <div style={{fontSize:10,color:P.t3,marginBottom:6}}>9 agents Â· 9 human counterparts</div>
+        <div style={{fontSize:10,color:P.t3,marginBottom:6}}>9 agents · 9 human counterparts</div>
         <div style={{display:"flex",alignItems:"center",gap:5,padding:"5px 8px",background:`${P.emerald}08`,borderRadius:7,border:`1px solid ${P.emerald}22`}}>
           <div style={{width:6,height:6,borderRadius:99,background:P.emerald,animation:"pgBlink 1.8s ease-in-out infinite"}}/>
           <span style={{fontSize:10,color:P.emerald,fontWeight:700}}>Human-in-the-Loop Active</span>
@@ -455,13 +456,13 @@ function HumanLoopPanel({ notifications, onReply }) {
               {/* type + time */}
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:7}}>
                 <span style={{fontSize:9,fontWeight:700,padding:"2px 6px",borderRadius:4,background:n.type==="email"?"#2563EB10":"#7C3AED10",color:n.type==="email"?"#2563EB":"#7C3AED"}}>
-                  {n.type==="email"?"ðŸ“§ EMAIL":"ðŸ’¬ TEAMS"}
+                  {n.type==="email"?"📧 EMAIL":"💬 TEAMS"}
                 </span>
                 <div style={{display:"flex",alignItems:"center",gap:5,fontSize:9}}>
                   {n.replied
-                    ? <span style={{color:P.emerald,fontWeight:700}}>âœ“ Replied</span>
+                    ? <span style={{color:P.emerald,fontWeight:700}}>✓ Replied</span>
                     : <span style={{color:n.status==="read"?P.emerald:n.status==="delivered"?P.cyan:P.t3,fontWeight:600}}>
-                        {n.status==="read"?"âœ“âœ“ Read":n.status==="delivered"?"âœ“ Delivered":"â— Sent"}
+                        {n.status==="read"?"✓✓ Read":n.status==="delivered"?"✓ Delivered":"● Sent"}
                       </span>
                   }
                   <span style={{color:P.t3}}>{n.time}</span>
@@ -487,11 +488,11 @@ function HumanLoopPanel({ notifications, onReply }) {
               {!n.replied && !expanded && (
                 <div style={{display:"flex",gap:5}}>
                   <button onClick={()=>setReplyId(n.id)} style={{flex:1,fontSize:10,fontWeight:600,padding:"5px 0",borderRadius:6,border:`1px solid ${human.color}44`,background:`${human.color}08`,color:human.color,cursor:"pointer"}}>
-                    Reply as {human.initials} â†’
+                    Reply as {human.initials} →
                   </button>
                   {n.agentId!=="larry" && n.humanId!=="larry" && (
                     <button onClick={()=>{
-                      onReply("larry","larry",`FWD from ${human.name}: ${n.message.slice(0,80)}â€¦`);
+                      onReply("larry","larry",`FWD from ${human.name}: ${n.message.slice(0,80)}…`);
                       setNotifs(p=>p.map(x=>x.id===n.id?{...x,replied:true,status:"read"}:x));
                     }} style={{fontSize:10,fontWeight:600,padding:"5px 8px",borderRadius:6,border:`1px solid ${P.cyan}44`,background:`${P.cyan}08`,color:P.cyan,cursor:"pointer"}}>+Larry</button>
                   )}
@@ -505,13 +506,13 @@ function HumanLoopPanel({ notifications, onReply }) {
                     <button key={qi} onClick={()=>doReply(n,qr)} style={{display:"block",width:"100%",fontSize:10.5,padding:"5px 8px",borderRadius:6,border:`1px solid ${human.color}33`,background:`${human.color}06`,color:P.t1,cursor:"pointer",textAlign:"left",lineHeight:1.4,marginBottom:4}}>{qr}</button>
                   ))}
                   <div style={{display:"flex",gap:5,marginTop:4}}>
-                    <input value={replyInput} onChange={e=>setReplyInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&replyInput.trim()&&doReply(n,replyInput)} placeholder="Custom messageâ€¦" style={{flex:1,fontSize:10.5,padding:"5px 8px",borderRadius:6,border:`1px solid ${P.border}`,background:P.bg2,outline:"none",color:P.t0,fontFamily:"inherit"}}/>
+                    <input value={replyInput} onChange={e=>setReplyInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&replyInput.trim()&&doReply(n,replyInput)} placeholder="Custom message…" style={{flex:1,fontSize:10.5,padding:"5px 8px",borderRadius:6,border:`1px solid ${P.border}`,background:P.bg2,outline:"none",color:P.t0,fontFamily:"inherit"}}/>
                     <button onClick={()=>replyInput.trim()&&doReply(n,replyInput)} style={{fontSize:10.5,fontWeight:700,padding:"5px 9px",borderRadius:6,border:"none",background:human.color,color:"#fff",cursor:"pointer"}}>Send</button>
-                    <button onClick={()=>{setReplyId(null);setReplyInput("");}} style={{fontSize:10,padding:"5px 7px",borderRadius:6,border:`1px solid ${P.border}`,background:"transparent",color:P.t3,cursor:"pointer"}}>âœ•</button>
+                    <button onClick={()=>{setReplyId(null);setReplyInput("");}} style={{fontSize:10,padding:"5px 7px",borderRadius:6,border:`1px solid ${P.border}`,background:"transparent",color:P.t3,cursor:"pointer"}}>✕</button>
                   </div>
                 </div>
               )}
-              {n.replied && <div style={{fontSize:10,color:P.emerald,fontWeight:600,display:"flex",alignItems:"center",gap:4}}><span>âœ“</span><span>{human.name} replied Â· added to Team Chat</span></div>}
+              {n.replied && <div style={{fontSize:10,color:P.emerald,fontWeight:600,display:"flex",alignItems:"center",gap:4}}><span>✓</span><span>{human.name} replied · added to Team Chat</span></div>}
             </div>
           );
         })}
@@ -525,26 +526,26 @@ function HumanLoopPanel({ notifications, onReply }) {
   );
 }
 
-// â”€â”€â”€ WORKFLOWS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── WORKFLOWS ────────────────────────────────────────────
 const WORKFLOWS = {
   chatMessage: [
-    {statusText:"Larry receiving your requestâ€¦",        agents:[{id:"larry",anim:"thinking",text:"Reading the PM's questionâ€¦"}],                                                                                                                    duration:900},
-    {statusText:"Larry routing to the right agentsâ€¦",   agents:[{id:"larry",anim:"calling",text:"Calling Peter the Program Health Agent + Ronnie the ROADS Agentâ€¦"},{id:"peter",anim:"thinking",text:"Standing byâ€¦"},{id:"ronnie",anim:"thinking",text:"Standing byâ€¦"}], call:{from:"larry",to:"peter"}, duration:1100},
-    {statusText:"Peter pulling data Â· Ronnie checking riskâ€¦", agents:[{id:"larry",anim:"working",text:"Orchestratingâ€¦"},{id:"peter",anim:"computing",text:"Pulling EAC varianceâ€¦"},{id:"ronnie",anim:"working",text:"Checking R-07â€¦"}],           duration:1300},
-    {statusText:"Eddie the Program Expert searching the knowledge baseâ€¦", agents:[{id:"larry",anim:"working",text:"Orchestratingâ€¦"},{id:"eddie",anim:"querying",text:"Searching program docsâ€¦"}], call:{from:"larry",to:"eddie"},                 duration:1100},
-    {statusText:"Bea the Business Acumen Agent synthesizingâ€¦", agents:[{id:"bea",anim:"synthesizing",text:"Building responseâ€¦"},{id:"peter",anim:"talking",text:"Routing to Beaâ€¦"},{id:"larry",anim:"thinking",text:"Awaiting synthesisâ€¦"}], call:{from:"peter",to:"bea"}, duration:1200},
-    {statusText:"Larry assembling the final responseâ€¦", agents:[{id:"larry",anim:"synthesizing",text:"Assembling answerâ€¦"}],                                                                                                                       duration:900},
+    {statusText:"Larry receiving your request…",        agents:[{id:"larry",anim:"thinking",text:"Reading the PM's question…"}],                                                                                                                    duration:900},
+    {statusText:"Larry routing to the right agents…",   agents:[{id:"larry",anim:"calling",text:"Calling Peter the Program Health Agent + Ronnie the ROADS Agent…"},{id:"peter",anim:"thinking",text:"Standing by…"},{id:"ronnie",anim:"thinking",text:"Standing by…"}], call:{from:"larry",to:"peter"}, duration:1100},
+    {statusText:"Peter pulling data · Ronnie checking risk…", agents:[{id:"larry",anim:"working",text:"Orchestrating…"},{id:"peter",anim:"computing",text:"Pulling EAC variance…"},{id:"ronnie",anim:"working",text:"Checking R-07…"}],           duration:1300},
+    {statusText:"Eddie the Program Expert searching the knowledge base…", agents:[{id:"larry",anim:"working",text:"Orchestrating…"},{id:"eddie",anim:"querying",text:"Searching program docs…"}], call:{from:"larry",to:"eddie"},                 duration:1100},
+    {statusText:"Bea the Business Acumen Agent synthesizing…", agents:[{id:"bea",anim:"synthesizing",text:"Building response…"},{id:"peter",anim:"talking",text:"Routing to Bea…"},{id:"larry",anim:"thinking",text:"Awaiting synthesis…"}], call:{from:"peter",to:"bea"}, duration:1200},
+    {statusText:"Larry assembling the final response…", agents:[{id:"larry",anim:"synthesizing",text:"Assembling answer…"}],                                                                                                                       duration:900},
   ],
   programSwitch: [
-    {statusText:"Larry switching program contextâ€¦",   agents:[{id:"larry",anim:"working",text:"Loading new programâ€¦"}],                                                                                        duration:800},
-    {statusText:"Eddie the Program Expert loading the knowledge baseâ€¦", agents:[{id:"larry",anim:"calling",text:"Calling Eddie the Program Expertâ€¦"},{id:"eddie",anim:"computing",text:"Loading program docsâ€¦"}], call:{from:"larry",to:"eddie"}, duration:1100},
-    {statusText:"Peter recalculating Â· Ronnie refreshing risk registerâ€¦", agents:[{id:"peter",anim:"computing",text:"Recalculating EAC/CPIâ€¦"},{id:"ronnie",anim:"working",text:"Refreshing risk registerâ€¦"},{id:"ivy",anim:"computing",text:"Reloading IMSâ€¦"}], duration:1200},
-    {statusText:"Team aligned â€” ready for new program.", agents:[{id:"larry",anim:"talking",text:"All agents synchronized"}],                                                                                  duration:700},
+    {statusText:"Larry switching program context…",   agents:[{id:"larry",anim:"working",text:"Loading new program…"}],                                                                                        duration:800},
+    {statusText:"Eddie the Program Expert loading the knowledge base…", agents:[{id:"larry",anim:"calling",text:"Calling Eddie the Program Expert…"},{id:"eddie",anim:"computing",text:"Loading program docs…"}], call:{from:"larry",to:"eddie"}, duration:1100},
+    {statusText:"Peter recalculating · Ronnie refreshing risk register…", agents:[{id:"peter",anim:"computing",text:"Recalculating EAC/CPI…"},{id:"ronnie",anim:"working",text:"Refreshing risk register…"},{id:"ivy",anim:"computing",text:"Reloading IMS…"}], duration:1200},
+    {statusText:"Team aligned — ready for new program.", agents:[{id:"larry",anim:"talking",text:"All agents synchronized"}],                                                                                  duration:700},
   ],
-  customize:[{statusText:"Larry updating your workspaceâ€¦", agents:[{id:"larry",anim:"working",text:"Applying configurationâ€¦"}], duration:900}],
+  customize:[{statusText:"Larry updating your workspace…", agents:[{id:"larry",anim:"working",text:"Applying configuration…"}], duration:900}],
 };
 
-// â”€â”€â”€ DATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── DATA ─────────────────────────────────────────────────
 function seeded(seed){let s=seed;return()=>{s=(s*1664525+1013904223)&0xffffffff;return(s>>>0)/0xffffffff;}}
 function rv(r,mn,mx,dp=2){return parseFloat((mn+r()*(mx-mn)).toFixed(dp));}
 const PROFIT_DATA=[{month:"Sep 25",actual:7.85},{month:"Oct 25",actual:7.34},{month:"Nov 25",actual:6.60},{month:"Dec 25",actual:6.03},{month:"Jan 26",actual:5.20},{month:"Feb 26",actual:4.58,forecast:4.58},{month:"Mar 26",forecast:3.95},{month:"Apr 26",forecast:3.40},{month:"May 26",forecast:2.88},{month:"Jun 26",forecast:2.35,warn:true},{month:"Jul 26",forecast:1.80,warn:true},{month:"Aug 26",forecast:1.20,warn:true}];
@@ -559,7 +560,7 @@ function genData(pid) {
     cpiTrend:Array.from({length:6},()=>parseFloat(rv(r,.88,1.03).toFixed(2))),
     spiTrend:Array.from({length:6},()=>parseFloat(rv(r,.90,1.04).toFixed(2))),
     bac:Math.round(rv(r,80,180)), eac:Math.round(rv(r,85,195)),
-    criticalPath:[{task:"Subsystem Integration Test",slip:"+9d",risk:"high"},{task:"Supplier Delivery â€” Sensor",slip:"+5d",risk:"med"},{task:"PDR Closeout",slip:"+2d",risk:"low"}],
+    criticalPath:[{task:"Subsystem Integration Test",slip:"+9d",risk:"high"},{task:"Supplier Delivery — Sensor",slip:"+5d",risk:"med"},{task:"PDR Closeout",slip:"+2d",risk:"low"}],
     nextMilestones:[{name:"PMR",days:18},{name:"PDR Dry Run",days:30},{name:"PDR",days:49}],
     cdrls:[{code:"A001",title:"Monthly Status Report",status:"green",due:"Jun 5"},{code:"A012",title:"Test Plan",status:"amber",due:"Jun 12"},{code:"A024",title:"Trade Study Results",status:"red",due:"Jun 8"}],
     reqs:{total:412,closed:287,open:125}, testPass:Math.round(rv(r,72,97)),
@@ -570,7 +571,7 @@ function genData(pid) {
   };
 }
 
-// â”€â”€â”€ CHART â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── CHART ────────────────────────────────────────────────
 function ProfitChart() {
   return (
     <ResponsiveContainer width="100%" height={180}>
@@ -586,8 +587,12 @@ function ProfitChart() {
   );
 }
 
-// â”€â”€â”€ CARD SHELL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── CARD SHELL ───────────────────────────────────────────
+// Lets any card trigger "ask this card's agent about its data" without
+// threading a callback through every individual card component.
+const CardAskCtx = React.createContext(null);
 function Card({agent,title,icon,wide=false,children}) {
+  const onAsk = React.useContext(CardAskCtx);
   return (
     <div style={{background:P.panel,border:`1px solid ${P.border}`,borderRadius:RR,padding:14,position:"relative",boxShadow:SH,gridColumn:wide?"1 / -1":"auto",display:"flex",flexDirection:"column",overflow:"hidden"}}>
       <Corners c={agent.color} i={5} s={8} o={.35}/>
@@ -596,10 +601,18 @@ function Card({agent,title,icon,wide=false,children}) {
           <Avatar agent={agent} size={26} glow={false}/>
           <div>
             <div style={{fontSize:11,fontWeight:700,letterSpacing:".08em",color:agent.color,textTransform:"uppercase",lineHeight:1.2}}>{title}</div>
-            <div style={{fontSize:9.5,color:P.t3,marginTop:1}}><span style={{color:agent.color,fontWeight:700}}>{agent.firstName}</span> Â· {agent.name}</div>
+            <div style={{fontSize:9.5,color:P.t3,marginTop:1}}><span style={{color:agent.color,fontWeight:700}}>{agent.firstName}</span> · {agent.name}</div>
           </div>
         </div>
-        <div style={{width:26,height:26,borderRadius:99,background:`${agent.color}12`,border:`1px solid ${agent.color}22`,color:agent.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12}}>{icon}</div>
+        <div style={{display:"flex",alignItems:"center",gap:6}}>
+          {onAsk && (
+            <button onClick={()=>onAsk(agent,title)} title={`Ask ${agent.firstName} about ${title}`}
+              style={{width:26,height:26,borderRadius:99,background:`${agent.color}12`,border:`1px solid ${agent.color}33`,color:agent.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,cursor:"pointer",padding:0,lineHeight:1,transition:"all .14s"}}
+              onMouseEnter={e=>{e.currentTarget.style.background=agent.color;e.currentTarget.style.color="#fff";}}
+              onMouseLeave={e=>{e.currentTarget.style.background=`${agent.color}12`;e.currentTarget.style.color=agent.color;}}>⚡</button>
+          )}
+          <div style={{width:26,height:26,borderRadius:99,background:`${agent.color}12`,border:`1px solid ${agent.color}22`,color:agent.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12}}>{icon}</div>
+        </div>
       </div>
       <div style={{flex:1}}>{children}</div>
     </div>
@@ -608,10 +621,10 @@ function Card({agent,title,icon,wide=false,children}) {
 function priC(p){return p==="high"?P.rose:p==="med"?P.amber:P.emerald;}
 const COL={green:P.emerald,amber:P.amber,red:P.rose};
 
-// â”€â”€â”€ CARDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── CARDS ────────────────────────────────────────────────
 function ActionsCard({data}) {
   return (
-    <Card agent={getAgent("larry")} title="Open Action Items" icon="âœ“" wide>
+    <Card agent={getAgent("larry")} title="Open Action Items" icon="✓" wide>
       <div style={{display:"flex",flexDirection:"column",gap:5}}>
         {data.actions.map(a=>(
           <div key={a.id} style={{display:"flex",alignItems:"center",gap:9,padding:"7px 10px",background:P.bg3,borderRadius:7}}>
@@ -627,7 +640,7 @@ function ActionsCard({data}) {
 }
 function AlertsCard({data}) {
   return (
-    <Card agent={getAgent("larry")} title="Team Alerts" icon="ðŸ””">
+    <Card agent={getAgent("larry")} title="Team Alerts" icon="🔔">
       <div style={{display:"flex",flexDirection:"column",gap:9}}>
         {data.alerts.map((a,i)=>{
           const tagAg = getAgent(a.agentId)||getAgent("larry");
@@ -638,7 +651,7 @@ function AlertsCard({data}) {
               <Avatar agent={tagAg} size={22} glow={false}/>
               <div style={{flex:1}}>
                 <div style={{fontSize:11.5,color:P.t0,lineHeight:1.4}}>{a.text}</div>
-                <div style={{fontSize:10,color:tagAg.color,fontWeight:600,marginTop:2}}>{tagAg.firstName} Â· {a.time}</div>
+                <div style={{fontSize:10,color:tagAg.color,fontWeight:600,marginTop:2}}>{tagAg.firstName} · {a.time}</div>
               </div>
             </div>
           );
@@ -651,7 +664,7 @@ function EVMCard({data}) {
   const e = data.evm;
   const tiles = [{l:"BCWP",v:`$${e.bcwp}M`},{l:"BCWS",v:`$${e.bcws}M`},{l:"ACWP",v:`$${e.acwp}M`},{l:"VAC",v:`${e.vac>=0?"+":""}${e.vac}M`,alert:e.vac<0}];
   return (
-    <Card agent={getAgent("bea")} title="EVM Snapshot" icon="â—ˆ">
+    <Card agent={getAgent("bea")} title="EVM Snapshot" icon="◈">
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:7}}>
         {tiles.map(t=>(
           <div key={t.l} style={{background:t.alert?`${P.rose}10`:P.bg3,borderRadius:8,padding:"9px 11px",border:`1px solid ${t.alert?P.rose+"33":P.border}`}}>
@@ -670,14 +683,14 @@ function ROSCard() {
       <div style={{display:"flex",gap:18,alignItems:"center",marginBottom:14}}>
         <Avatar agent={getAgent("peter")} size={68} glow/>
         <div>
-          <div style={{fontSize:11,fontWeight:700,letterSpacing:".1em",color:P.emerald,textTransform:"uppercase"}}>ROS Health Â· Profit Recognition</div>
-          <div style={{fontSize:22,fontWeight:700,color:P.t0,marginTop:2}}><span style={{color:P.emerald}}>Peter</span> Â· Program Health Agent</div>
-          <div style={{fontSize:11.5,color:P.t2,fontStyle:"italic",marginTop:3}}>"Analytical â€” watches the numbers and raises early warnings."</div>
+          <div style={{fontSize:11,fontWeight:700,letterSpacing:".1em",color:P.emerald,textTransform:"uppercase"}}>ROS Health · Profit Recognition</div>
+          <div style={{fontSize:22,fontWeight:700,color:P.t0,marginTop:2}}><span style={{color:P.emerald}}>Peter</span> · Program Health Agent</div>
+          <div style={{fontSize:11.5,color:P.t2,fontStyle:"italic",marginTop:3}}>"Analytical — watches the numbers and raises early warnings."</div>
         </div>
         <div style={{marginLeft:"auto",textAlign:"center"}}>
           <div style={{fontSize:38,fontWeight:700,color:P.emerald,lineHeight:1}}>4.58%</div>
-          <div style={{fontSize:11,color:P.rose,marginTop:4}}>â–¼ -0.67% this month</div>
-          <div style={{fontSize:11,color:P.rose}}>â–¼ -2.01% over 3 months</div>
+          <div style={{fontSize:11,color:P.rose,marginTop:4}}>▼ -0.67% this month</div>
+          <div style={{fontSize:11,color:P.rose}}>▼ -2.01% over 3 months</div>
         </div>
       </div>
       <ProfitChart/>
@@ -688,7 +701,7 @@ function CPISPICard({data}) {
   const td = data.cpiTrend.map((v,i)=>({m:`M${i+1}`,cpi:v,spi:data.spiTrend[i]}));
   const pa = getAgent("peter");
   return (
-    <Card agent={pa} title="CPI / SPI Trend" icon="â–¦">
+    <Card agent={pa} title="CPI / SPI Trend" icon="▦">
       <div style={{display:"flex",gap:14,marginBottom:6}}>
         <div><span style={{fontSize:10,color:P.t3}}>CPI </span><span style={{fontSize:14,fontWeight:700,color:data.cpi>=1?P.emerald:P.amber}}>{data.cpi}</span></div>
         <div><span style={{fontSize:10,color:P.t3}}>SPI </span><span style={{fontSize:14,fontWeight:700,color:data.spi>=1?P.emerald:P.cyan}}>{data.spi}</span></div>
@@ -709,7 +722,7 @@ function EACCard({data}) {
   const delta = data.eac - data.bac;
   const c = delta>0?P.rose:P.emerald;
   return (
-    <Card agent={getAgent("peter")} title="EAC vs BAC" icon="â–¦">
+    <Card agent={getAgent("peter")} title="EAC vs BAC" icon="▦">
       <div style={{display:"flex",flexDirection:"column",gap:11}}>
         <div style={{display:"flex",justifyContent:"space-between"}}>
           <div><div style={{fontSize:9.5,color:P.t3,fontWeight:600}}>BAC</div><div style={{fontSize:22,fontWeight:700,color:P.t0}}>${data.bac}M</div></div>
@@ -724,7 +737,7 @@ function EACCard({data}) {
 }
 function CritPathCard({data}) {
   return (
-    <Card agent={getAgent("ivy")} title="Critical Path Drivers" icon="â–·" wide>
+    <Card agent={getAgent("ivy")} title="Critical Path Drivers" icon="▷" wide>
       <div style={{display:"flex",flexDirection:"column",gap:6}}>
         {data.criticalPath.map((t,i)=>{
           const c = priC(t.risk);
@@ -743,7 +756,7 @@ function CritPathCard({data}) {
 function MilestonesCard({data}) {
   const ia = getAgent("ivy");
   return (
-    <Card agent={ia} title="Milestone Countdown" icon="â–·">
+    <Card agent={ia} title="Milestone Countdown" icon="▷">
       <div style={{display:"flex",flexDirection:"column",gap:8}}>
         {data.nextMilestones.map((m,i)=>(
           <div key={i} style={{display:"flex",alignItems:"center",gap:11,padding:"5px 0",borderTop:i===0?"none":`1px solid ${P.border}`}}>
@@ -760,7 +773,7 @@ function MilestonesCard({data}) {
 }
 function CDRLCard({data}) {
   return (
-    <Card agent={getAgent("connie")} title="CDRL Status" icon="â—«">
+    <Card agent={getAgent("connie")} title="CDRL Status" icon="◫">
       <div style={{display:"flex",flexDirection:"column",gap:5}}>
         {data.cdrls.map((d,i)=>(
           <div key={i} style={{display:"flex",alignItems:"center",gap:9,padding:"7px 9px",background:P.bg3,borderRadius:7}}>
@@ -778,7 +791,7 @@ function ReqCard({data}) {
   const pct = Math.round(data.reqs.closed/data.reqs.total*100);
   const ta  = getAgent("tony");
   return (
-    <Card agent={ta} title="Requirements Burndown" icon="â¬•">
+    <Card agent={ta} title="Requirements Burndown" icon="⬕">
       <div style={{display:"flex",flexDirection:"column",gap:10}}>
         <div style={{display:"flex",justifyContent:"space-between"}}>
           <span style={{fontSize:11,color:P.t3}}>Closed</span>
@@ -788,8 +801,8 @@ function ReqCard({data}) {
           <div style={{height:"100%",width:`${pct}%`,background:ta.color,borderRadius:99}}/>
         </div>
         <div style={{display:"flex",justifyContent:"space-between",fontSize:11}}>
-          <span style={{color:P.emerald}}>â— {data.reqs.closed} closed</span>
-          <span style={{color:P.amber}}>â— {data.reqs.open} open</span>
+          <span style={{color:P.emerald}}>● {data.reqs.closed} closed</span>
+          <span style={{color:P.amber}}>● {data.reqs.open} open</span>
         </div>
       </div>
     </Card>
@@ -799,7 +812,7 @@ function TestCard({data}) {
   const p = data.testPass;
   const c = p>=90?P.emerald:p>=75?P.amber:P.rose;
   return (
-    <Card agent={getAgent("tony")} title="Test Pass Rate" icon="â¬•">
+    <Card agent={getAgent("tony")} title="Test Pass Rate" icon="⬕">
       <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:9}}>
         <div style={{fontSize:44,fontWeight:700,color:c,lineHeight:1}}>{p}%</div>
         <div style={{width:"100%",height:5,background:P.bg4,borderRadius:99,overflow:"hidden"}}>
@@ -812,7 +825,7 @@ function TestCard({data}) {
 }
 function SupplierCard({data}) {
   return (
-    <Card agent={getAgent("sully")} title="Supplier Status" icon="â—¬" wide>
+    <Card agent={getAgent("sully")} title="Supplier Status" icon="◬" wide>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:7}}>
         {data.suppliers.map((s,i)=>(
           <div key={i} style={{display:"flex",alignItems:"center",gap:9,padding:"9px 11px",background:P.bg3,borderRadius:7}}>
@@ -827,7 +840,7 @@ function SupplierCard({data}) {
 }
 function RiskCard({data}) {
   return (
-    <Card agent={getAgent("ronnie")} title="Risk Register Â· Top 4" icon="âš " wide>
+    <Card agent={getAgent("ronnie")} title="Risk Register · Top 4" icon="⚠" wide>
       <div style={{display:"flex",flexDirection:"column",gap:5}}>
         {data.risks.map(r=>{
           const c = priC(r.priority);
@@ -848,7 +861,7 @@ function MitigationCard({data}) {
   const td = data.mitigationTrend.map((v,i)=>({m:`M${i+1}`,v}));
   const ra = getAgent("ronnie");
   return (
-    <Card agent={ra} title="Mitigation Burn-down" icon="âš ">
+    <Card agent={ra} title="Mitigation Burn-down" icon="⚠">
       <ResponsiveContainer width="100%" height={90}>
         <LineChart data={td} margin={{top:4,right:4,left:-34,bottom:0}}>
           <XAxis dataKey="m" tick={{fontSize:8.5,fill:P.t3}} axisLine={false} tickLine={false}/>
@@ -871,21 +884,21 @@ const CARD_CATALOG = [
 ];
 const DEFAULT_CARDS = ["ros","cpi","eac","actions","risk","alerts"];
 
-// â”€â”€â”€ TEAM CHAT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── TEAM CHAT ────────────────────────────────────────────
 const INIT_CHAT = [
-  {agentId:"larry",  time:"10:15 AM", text:"Good morning. Pulling the team together. Peter the Program Health Agent â€” what's the read on cost today?"},
+  {agentId:"larry",  time:"10:15 AM", text:"Good morning. Pulling the team together. Peter the Program Health Agent — what's the read on cost today?"},
   {agentId:"peter",  time:"10:15 AM", text:"Profit Recognition at 4.58% and trending down. Two-month variance is unfavorable."},
-  {agentId:"peter",  toAgentId:"ronnie", time:"10:16 AM", text:"Routing the EAC delta to Ronnie the ROADS Agent â€” $1.2M exposure if the trend holds."},
-  {agentId:"ronnie", time:"10:16 AM", text:"Got it Peter. Logging as R-07 update. Larry â€” recommend PM-level escalation."},
+  {agentId:"peter",  toAgentId:"ronnie", time:"10:16 AM", text:"Routing the EAC delta to Ronnie the ROADS Agent — $1.2M exposure if the trend holds."},
+  {agentId:"ronnie", time:"10:16 AM", text:"Got it Peter. Logging as R-07 update. Larry — recommend PM-level escalation."},
   {agentId:"ivy",    time:"10:16 AM", text:"Adding context: critical path shifted. Subsystem Integration is now the driver. MS-14 has 9-day slip."},
-  {agentId:"larry",  toAgentId:"connie", time:"10:17 AM", text:"Connie the Contracts Agent â€” pull the CDRLs tied to the Subsystem Integration test?"},
+  {agentId:"larry",  toAgentId:"connie", time:"10:17 AM", text:"Connie the Contracts Agent — pull the CDRLs tied to the Subsystem Integration test?"},
   {agentId:"connie", time:"10:17 AM", text:"On it Larry. A012 Test Plan due in 8 days, currently amber. I'll surface the full chain."},
   {agentId:"larry",  time:"10:17 AM", text:"Mitigation steps generated. See the Recommended Actions panel. Team on standby."},
 ];
 const REPLIES = [
-  "I'll have Peter the Program Health Agent pull the EAC. He's already flagged WBS 3.2 at 12% over plan â€” labor variance is the driver. Want me to loop in Bea the Business Acumen Agent for portfolio impact?",
-  "Ivy the IMS Agent is on it â€” she's calling out a 9-day slip on MS-14. Sully the Supply Chain Agent is checking the supplier side. Want a what-if for a replan?",
-  "Ronnie the ROADS Agent has 14 open risks. R-07 is the top exposure at $2.1M â€” three mitigations are past due. Should I escalate?",
+  "I'll have Peter the Program Health Agent pull the EAC. He's already flagged WBS 3.2 at 12% over plan — labor variance is the driver. Want me to loop in Bea the Business Acumen Agent for portfolio impact?",
+  "Ivy the IMS Agent is on it — she's calling out a 9-day slip on MS-14. Sully the Supply Chain Agent is checking the supplier side. Want a what-if for a replan?",
+  "Ronnie the ROADS Agent has 14 open risks. R-07 is the top exposure at $2.1M — three mitigations are past due. Should I escalate?",
   "7 INAR items still open, three past due. I've routed them to Connie the Contracts Agent and the responsible CAMs. Status brief incoming.",
   "Eddie the Program Expert is searching the program archive now. Connie the Contracts Agent is checking the CDRL chain. Results in a moment.",
 ];
@@ -904,15 +917,15 @@ function TeamChat({ messages, onSend }) {
       <Corners c={P.cyan} i={8}/>
       <div style={{padding:"13px 16px 11px",borderBottom:`1px solid ${P.border}`,flexShrink:0}}>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:5}}>
-          <div style={{width:26,height:26,borderRadius:7,background:`${P.cyan}15`,border:`1px solid ${P.cyan}33`,display:"flex",alignItems:"center",justifyContent:"center",color:P.cyan,fontSize:12}}>ðŸ’¬</div>
+          <div style={{width:26,height:26,borderRadius:7,background:`${P.cyan}15`,border:`1px solid ${P.cyan}33`,display:"flex",alignItems:"center",justifyContent:"center",color:P.cyan,fontSize:12}}>💬</div>
           <span style={{fontSize:13,fontWeight:700,letterSpacing:".1em",color:P.cyan,textTransform:"uppercase"}}>Agent Team Chat</span>
         </div>
-        <div style={{fontSize:10.5,color:P.t3}}>Agents Â· PM Â· Human Counterparts</div>
+        <div style={{fontSize:10.5,color:P.t3}}>Agents · PM · Human Counterparts</div>
       </div>
 
       <div style={{flex:1,overflowY:"auto",padding:"12px 14px",display:"flex",flexDirection:"column",gap:12}}>
         {messages.map((m, i) => {
-          // â”€â”€ human counterpart message â”€â”€
+          // ── human counterpart message ──
           if (m.type === "human") {
             const human    = HUMANS[m.humanId];
             const targetAg = getAgent(m.toAgentId) || getAgent("larry");
@@ -922,19 +935,19 @@ function TeamChat({ messages, onSend }) {
                 <HumanBadge humanId={m.humanId} size={32}/>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{display:"flex",alignItems:"baseline",gap:5,marginBottom:2,flexWrap:"wrap"}}>
-                    <span style={{fontSize:11.5,fontWeight:700,color:human.color}}>ðŸ‘¤ {human.name}</span>
-                    <span style={{fontSize:9.5,color:P.t3}}>â†’</span>
+                    <span style={{fontSize:11.5,fontWeight:700,color:human.color}}>👤 {human.name}</span>
+                    <span style={{fontSize:9.5,color:P.t3}}>→</span>
                     <Avatar agent={targetAg} size={16} glow={false}/>
                     <span style={{fontSize:11,color:targetAg.color,fontWeight:600}}>{targetAg.firstName}</span>
                     <span style={{fontSize:10,color:P.t3,marginLeft:"auto"}}>{m.time}</span>
                   </div>
-                  <div style={{fontSize:9.5,color:P.t3,marginBottom:4}}>{human.title} Â· Human Counterpart</div>
+                  <div style={{fontSize:9.5,color:P.t3,marginBottom:4}}>{human.title} · Human Counterpart</div>
                   <div style={{fontSize:12.5,color:P.t1,lineHeight:1.55,background:`${human.color}08`,border:`1px solid ${human.color}22`,borderRadius:"4px 11px 11px 11px",padding:"8px 12px"}}>{m.text}</div>
                 </div>
               </div>
             );
           }
-          // â”€â”€ PM message â”€â”€
+          // ── PM message ──
           if (m.agentId === "user") {
             return (
               <div key={i} style={{display:"flex",gap:8,flexDirection:"row-reverse",alignItems:"flex-end"}}>
@@ -943,7 +956,7 @@ function TeamChat({ messages, onSend }) {
               </div>
             );
           }
-          // â”€â”€ agent message â”€â”€
+          // ── agent message ──
           const tagAg = getAgent(m.agentId) || AGENTS[0];
           const destAg = m.toAgentId ? getAgent(m.toAgentId) : null;
           return (
@@ -952,7 +965,7 @@ function TeamChat({ messages, onSend }) {
                 <Avatar agent={tagAg} size={30} glow={false}/>
                 {destAg && (
                   <>
-                    <span style={{fontSize:12,color:tagAg.color,fontWeight:700,animation:"pgArrow 1s ease-in-out infinite"}}>â†’</span>
+                    <span style={{fontSize:12,color:tagAg.color,fontWeight:700,animation:"pgArrow 1s ease-in-out infinite"}}>→</span>
                     <Avatar agent={destAg} size={24} glow={false}/>
                   </>
                 )}
@@ -962,7 +975,7 @@ function TeamChat({ messages, onSend }) {
                   <span style={{fontSize:12,fontWeight:700,color:tagAg.color}}>{tagAg.firstName}</span>
                   {destAg && (
                     <>
-                      <span style={{fontSize:10.5,color:P.t3}}>â†’</span>
+                      <span style={{fontSize:10.5,color:P.t3}}>→</span>
                       <span style={{fontSize:11.5,fontWeight:700,color:destAg.color}}>{destAg.firstName}</span>
                     </>
                   )}
@@ -978,15 +991,15 @@ function TeamChat({ messages, onSend }) {
 
       <div style={{padding:"10px 13px",borderTop:`1px solid ${P.border}`,background:P.bg3,flexShrink:0}}>
         <div style={{display:"flex",gap:7,background:P.bg2,border:`1.5px solid ${foc?P.cyan:P.border}`,borderRadius:8,padding:"7px 11px",transition:"border-color .2s"}}>
-          <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send()} onFocus={()=>setFoc(true)} onBlur={()=>setFoc(false)} placeholder="Ask Larry to coordinateâ€¦" style={{flex:1,fontSize:12.5,background:"transparent",border:"none",outline:"none",color:P.t0,fontFamily:"inherit"}}/>
-          <button onClick={send} style={{width:28,height:28,borderRadius:7,border:"none",background:`${P.cyan}15`,color:P.cyan,cursor:"pointer",fontSize:13,display:"flex",alignItems:"center",justifyContent:"center"}}>âž¤</button>
+          <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send()} onFocus={()=>setFoc(true)} onBlur={()=>setFoc(false)} placeholder="Ask Larry to coordinate…" style={{flex:1,fontSize:12.5,background:"transparent",border:"none",outline:"none",color:P.t0,fontFamily:"inherit"}}/>
+          <button onClick={send} style={{width:28,height:28,borderRadius:7,border:"none",background:`${P.cyan}15`,color:P.cyan,cursor:"pointer",fontSize:13,display:"flex",alignItems:"center",justifyContent:"center"}}>➤</button>
         </div>
       </div>
     </div>
   );
 }
 
-// â”€â”€â”€ CUSTOMIZE DRAWER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── CUSTOMIZE DRAWER ─────────────────────────────────────
 const DRAWER_META = {
   actions:   {agentId:"larry", title:"Open Action Items",     desc:"PM-level action tracking"},
   alerts:    {agentId:"larry", title:"Team Alerts",           desc:"Real-time agent notifications"},
@@ -1016,7 +1029,7 @@ function Drawer({open,onClose,active,setActive}) {
             <div style={{fontSize:10.5,fontWeight:700,letterSpacing:".14em",color:P.cyan,textTransform:"uppercase"}}>Customize</div>
             <div style={{fontSize:18,fontWeight:700,color:P.t0,marginTop:2}}>Command Central</div>
           </div>
-          <button onClick={onClose} style={{width:30,height:30,borderRadius:7,border:`1px solid ${P.border}`,background:"transparent",color:P.t2,cursor:"pointer",fontSize:13}}>âœ•</button>
+          <button onClick={onClose} style={{width:30,height:30,borderRadius:7,border:`1px solid ${P.border}`,background:"transparent",color:P.t2,cursor:"pointer",fontSize:13}}>✕</button>
         </div>
         <div style={{flex:1,overflowY:"auto",padding:"12px 16px"}}>
           {groups.map(({agent,cards})=>(
@@ -1024,7 +1037,7 @@ function Drawer({open,onClose,active,setActive}) {
               <div style={{display:"flex",alignItems:"center",gap:10,padding:"10px 13px",background:`${agent.color}06`}}>
                 <Avatar agent={agent} size={32} glow={false}/>
                 <div style={{flex:1}}>
-                  <div style={{fontSize:13,fontWeight:700,color:P.t0}}><span style={{color:agent.color}}>{agent.firstName}</span> Â· {agent.name}</div>
+                  <div style={{fontSize:13,fontWeight:700,color:P.t0}}><span style={{color:agent.color}}>{agent.firstName}</span> · {agent.name}</div>
                   <div style={{fontSize:10,color:agent.color,fontWeight:600,marginTop:1}}>{cards.filter(([id])=>active.includes(id)).length}/{cards.length} cards active</div>
                 </div>
                 <div style={{display:"flex",alignItems:"center",gap:5}}>
@@ -1061,7 +1074,7 @@ function Drawer({open,onClose,active,setActive}) {
   );
 }
 
-// â”€â”€â”€ PROGRAMS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── PROGRAMS ─────────────────────────────────────────────
 const PROGRAMS = [
   {id:"f35",   label:"F-35 Block IV",       contract:"NNR-2022-0041",     month:"18 of 42"},
   {id:"ch53",  label:"CH-53K King Stallion", contract:"N00019-2019-0087",  month:"34 of 60"},
@@ -1069,7 +1082,7 @@ const PROGRAMS = [
   {id:"lrso",  label:"LRSO Program",        contract:"FA8681-23-C-0011",  month:"5 of 48"},
 ];
 
-// â”€â”€â”€ HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── HEADER ───────────────────────────────────────────────
 function Header({view,onNav,programId,setProgramId}) {
   const [progOpen, setProgOpen] = useState(false);
   const prog  = PROGRAMS.find(p=>p.id===programId);
@@ -1083,7 +1096,7 @@ function Header({view,onNav,programId,setProgramId}) {
       </div>
       <div style={{flex:1}}/>
       <div style={{display:"flex",gap:0,background:P.bg2,border:`1.5px solid ${P.border}`,borderRadius:12,padding:6,boxShadow:SH}}>
-        {[{id:"command",label:"COMMAND",icon:"â¬›"},{id:"team",label:"TEAM",icon:"ðŸ‘¥"},{id:"autonomy",label:"AUTONOMY",icon:"âš™"},{id:"chat",label:"DIRECT CHAT",icon:"ðŸ’¬"}].map((n,i)=>{
+        {[{id:"command",label:"COMMAND",icon:"⬛"},{id:"team",label:"TEAM",icon:"👥"},{id:"autonomy",label:"AUTONOMY",icon:"⚙"},{id:"chat",label:"DIRECT CHAT",icon:"💬"}].map((n,i)=>{
           const isActive = view===n.id;
           return (
             <div key={n.id} style={{display:"flex",alignItems:"center"}}>
@@ -1102,14 +1115,14 @@ function Header({view,onNav,programId,setProgramId}) {
             <div style={{fontSize:12,fontWeight:600,color:P.t0,lineHeight:1.2}}>{prog.label}</div>
             <div style={{fontSize:10,color:P.t3}}>{prog.contract}</div>
           </div>
-          <span style={{fontSize:10,color:P.t3}}>â–¾</span>
+          <span style={{fontSize:10,color:P.t3}}>▾</span>
         </div>
         {progOpen && (
           <div style={{position:"absolute",top:50,right:0,zIndex:200,background:P.bg2,border:`1px solid ${P.border}`,borderRadius:9,overflow:"hidden",minWidth:240,boxShadow:"0 16px 40px rgba(15,23,42,.12)"}}>
             {PROGRAMS.map(p=>(
               <div key={p.id} onClick={()=>{setProgramId(p.id);setProgOpen(false);}} style={{padding:"9px 13px",cursor:"pointer",background:p.id===programId?`${P.cyan}10`:"transparent",borderLeft:`2px solid ${p.id===programId?P.cyan:"transparent"}`,transition:"all .12s"}}>
                 <div style={{fontSize:13,fontWeight:600,color:p.id===programId?P.cyan:P.t0}}>{p.label}</div>
-                <div style={{fontSize:10,color:P.t3,marginTop:1}}>{p.contract} Â· Mo {p.month}</div>
+                <div style={{fontSize:10,color:P.t3,marginTop:1}}>{p.contract} · Mo {p.month}</div>
               </div>
             ))}
           </div>
@@ -1119,8 +1132,8 @@ function Header({view,onNav,programId,setProgramId}) {
   );
 }
 
-// â”€â”€â”€ VIEWS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function CommandView({activeCards,onCustomize,programId,workflow,triggerWorkflow}) {
+// ─── VIEWS ────────────────────────────────────────────────
+function CommandView({activeCards,onCustomize,programId,workflow,triggerWorkflow,onAskCard}) {
   const [chatMsgs,    setChatMsgs]    = useState(INIT_CHAT);
   const [notifList,   setNotifList]   = useState(INIT_NOTIFS);
   const notifIdRef = useRef(INIT_NOTIFS.length + 1);
@@ -1183,18 +1196,20 @@ function CommandView({activeCards,onCustomize,programId,workflow,triggerWorkflow
       <div style={{display:"flex",flexDirection:"column",gap:13,overflowY:"auto",minWidth:0}}>
         <WarRoomPanel workflow={workflow} onWorkflowDone={()=>{}} onNotify={addNotification}/>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-          <div style={{fontSize:10.5,fontWeight:700,letterSpacing:".14em",color:P.cyan,textTransform:"uppercase"}}>Your Workspace Â· {cards.length} cards active</div>
-          <button onClick={onCustomize} style={{display:"flex",alignItems:"center",gap:6,fontSize:11,fontWeight:600,padding:"6px 13px",borderRadius:7,border:`1px solid ${P.border}`,background:P.bg2,color:P.cyan,cursor:"pointer",boxShadow:SH}}>âš™ CUSTOMIZE</button>
+          <div style={{fontSize:10.5,fontWeight:700,letterSpacing:".14em",color:P.cyan,textTransform:"uppercase"}}>Your Workspace · {cards.length} cards active</div>
+          <button onClick={onCustomize} style={{display:"flex",alignItems:"center",gap:6,fontSize:11,fontWeight:600,padding:"6px 13px",borderRadius:7,border:`1px solid ${P.border}`,background:P.bg2,color:P.cyan,cursor:"pointer",boxShadow:SH}}>⚙ CUSTOMIZE</button>
         </div>
         {cards.length===0
           ? <div style={{background:P.panel,border:`1px dashed ${P.border}`,borderRadius:RR,padding:"50px 24px",textAlign:"center",boxShadow:SH}}>
-              <div style={{fontSize:32,marginBottom:12}}>ðŸ“Š</div>
+              <div style={{fontSize:32,marginBottom:12}}>📊</div>
               <div style={{fontSize:14,fontWeight:600,color:P.t0,marginBottom:6}}>No cards selected</div>
-              <button onClick={onCustomize} style={{fontSize:12,fontWeight:600,padding:"10px 22px",borderRadius:8,border:"none",background:P.cyan,color:"white",cursor:"pointer",marginTop:8}}>âš™ CUSTOMIZE</button>
+              <button onClick={onCustomize} style={{fontSize:12,fontWeight:600,padding:"10px 22px",borderRadius:8,border:"none",background:P.cyan,color:"white",cursor:"pointer",marginTop:8}}>⚙ CUSTOMIZE</button>
             </div>
-          : <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-              {cards.map(c=><c.Comp key={c.id} data={data}/>)}
-            </div>
+          : <CardAskCtx.Provider value={onAskCard}>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                {cards.map(c=><c.Comp key={c.id} data={data}/>)}
+              </div>
+            </CardAskCtx.Provider>
         }
       </div>
 
@@ -1223,7 +1238,7 @@ function TeamView({onChat}) {
       <div style={{textAlign:"center",marginBottom:24}}>
         <div style={{fontSize:10.5,fontWeight:700,letterSpacing:".2em",color:P.cyan,marginBottom:6}}>MEET THE TEAM</div>
         <h1 style={{margin:"0 0 4px",fontSize:32,fontWeight:700,color:P.t0}}>PROGRAM GUARDIAN</h1>
-        <div style={{fontSize:13,fontWeight:500,letterSpacing:".32em",color:P.cyan,marginBottom:12}}>AI AGENT TEAM Â· 9 AGENTS Â· 9 HUMAN COUNTERPARTS</div>
+        <div style={{fontSize:13,fontWeight:500,letterSpacing:".32em",color:P.cyan,marginBottom:12}}>AI AGENT TEAM · 9 AGENTS · 9 HUMAN COUNTERPARTS</div>
       </div>
       <div style={{display:"flex",justifyContent:"center",marginBottom:28}}>
         <div style={{background:P.bg2,border:`1.5px solid ${P.cyan}66`,borderRadius:14,padding:"20px 28px",display:"flex",gap:20,alignItems:"center",maxWidth:580,boxShadow:SH,position:"relative"}}>
@@ -1231,13 +1246,13 @@ function TeamView({onChat}) {
           <Avatar agent={larry} size={100} glow framed/>
           <div>
             <div style={{display:"inline-block",fontSize:9.5,fontWeight:700,padding:"3px 9px",borderRadius:99,background:`${P.gold}20`,color:"#92400E",letterSpacing:".12em",marginBottom:6}}>LEAD AGENT</div>
-            <div style={{fontSize:22,fontWeight:700,color:P.t0,marginBottom:2}}><span style={{color:larry.color}}>Larry</span> Â· Lead Program Guardian</div>
+            <div style={{fontSize:22,fontWeight:700,color:P.t0,marginBottom:2}}><span style={{color:larry.color}}>Larry</span> · Lead Program Guardian</div>
             <div style={{fontSize:11.5,color:P.t2,lineHeight:1.6,marginBottom:8,maxWidth:260,fontStyle:"italic"}}>"{larry.persona}"</div>
             <div style={{display:"flex",alignItems:"center",gap:8,padding:"7px 10px",background:`${P.cyan}08`,borderRadius:8,border:`1px solid ${P.cyan}22`,marginBottom:8}}>
               <HumanBadge humanId="larry" size={28}/>
-              <div><div style={{fontSize:11.5,fontWeight:700,color:P.t0}}>Col. R. Mitchell</div><div style={{fontSize:10,color:P.t3}}>Program Manager Â· Human Counterpart</div></div>
+              <div><div style={{fontSize:11.5,fontWeight:700,color:P.t0}}>Col. R. Mitchell</div><div style={{fontSize:10,color:P.t3}}>Program Manager · Human Counterpart</div></div>
             </div>
-            <button onClick={()=>onChat(larry)} style={{fontSize:11,fontWeight:600,padding:"6px 13px",borderRadius:7,border:`1px solid ${P.cyan}55`,background:`${P.cyan}10`,color:P.cyan,cursor:"pointer"}}>CHAT WITH LARRY â†’</button>
+            <button onClick={()=>onChat(larry)} style={{fontSize:11,fontWeight:600,padding:"6px 13px",borderRadius:7,border:`1px solid ${P.cyan}55`,background:`${P.cyan}10`,color:P.cyan,cursor:"pointer"}}>CHAT WITH LARRY →</button>
           </div>
         </div>
       </div>
@@ -1252,7 +1267,7 @@ function TeamView({onChat}) {
               <Corners c={a.color} i={5} s={7}/>
               <Avatar agent={a} size={68} glow/>
               <div style={{textAlign:"center"}}>
-                <div style={{fontSize:13,fontWeight:700,color:P.t0,marginBottom:2}}><span style={{color:a.color}}>{a.firstName}</span> Â· {a.name.split(" ")[0]}</div>
+                <div style={{fontSize:13,fontWeight:700,color:P.t0,marginBottom:2}}><span style={{color:a.color}}>{a.firstName}</span> · {a.name.split(" ")[0]}</div>
                 <div style={{fontSize:10,fontWeight:600,color:a.color,letterSpacing:".06em",textTransform:"uppercase",marginBottom:5}}>{a.role}</div>
                 <div style={{fontSize:10,color:P.t3,fontStyle:"italic",lineHeight:1.4}}>"{a.persona}"</div>
               </div>
@@ -1281,7 +1296,7 @@ function AutonomyView() {
     <div style={{flex:1,overflowY:"auto",padding:"24px 28px"}}>
       <div style={{marginBottom:20}}>
         <div style={{fontSize:10.5,fontWeight:700,letterSpacing:".16em",color:P.cyan,marginBottom:5}}>AUTONOMY SETTINGS</div>
-        <h2 style={{margin:0,fontSize:22,fontWeight:700,color:P.t0}}>Autonomous Where Safe Â· Human Where Strategic</h2>
+        <h2 style={{margin:0,fontSize:22,fontWeight:700,color:P.t0}}>Autonomous Where Safe · Human Where Strategic</h2>
         <p style={{margin:"6px 0 0",fontSize:12.5,color:P.t2}}>Set each agent's operating level. Human counterparts are notified of all autonomous actions.</p>
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:9}}>
@@ -1296,10 +1311,10 @@ function AutonomyView() {
               <div style={{flex:1,minWidth:0}}>
                 <div style={{fontSize:13.5,fontWeight:700,color:P.t0}}>
                   <span style={{color:a.color}}>{a.firstName}</span> the {a.name}
-                  <span style={{fontSize:10,color:P.t3,fontWeight:400}}> â†” </span>
+                  <span style={{fontSize:10,color:P.t3,fontWeight:400}}> ↔ </span>
                   <span style={{color:human?.color,fontSize:12}}>{human?.name}</span>
                 </div>
-                <div style={{fontSize:10,color:P.t3,marginTop:2}}>{a.role} Â· Human: {human?.title}</div>
+                <div style={{fontSize:10,color:P.t3,marginTop:2}}>{a.role} · Human: {human?.title}</div>
               </div>
               <div style={{display:"flex",gap:5}}>
                 {LEVELS.map(l=>{
@@ -1315,16 +1330,28 @@ function AutonomyView() {
   );
 }
 
-function DirectChatView({initial}) {
-  const [active, setActive] = useState(initial||AGENTS[0]);
+function DirectChatView({initial, ask}) {
+  const [active, setActive] = useState((ask&&ask.agent)||initial||AGENTS[0]);
   const [msgs,   setMsgs]   = useState([]);
   const [input,  setInput]  = useState("");
   const [foc,    setFoc]    = useState(false);
   const botRef = useRef(null);
+  const seededAsk = useRef(0);
   useEffect(()=>{botRef.current?.scrollIntoView({behavior:"smooth"});},[msgs]);
+  // When a card's ⚡ requests a question, switch to that agent.
+  useEffect(()=>{ if(ask&&ask.agent&&ask.token!==seededAsk.current) setActive(ask.agent); },[ask&&ask.token]);
+  // Build the conversation. If a fresh ask targets the current agent, seed
+  // the greeting + the auto-question + the agent's reply; otherwise just greet.
   useEffect(()=>{
-    setMsgs([{agentId:active.id, time:"Just now", text:`Hi â€” I'm ${active.firstName}. ${active.lead?"I coordinate the full team and have complete program visibility.":`My domain is ${active.role.toLowerCase()}.`} How can I help?`}]);
-  },[active.id]);
+    const greeting = {agentId:active.id, time:"Just now", text:`Hi — I'm ${active.firstName}. ${active.lead?"I coordinate the full team and have complete program visibility.":`My domain is ${active.role.toLowerCase()}.`} How can I help?`};
+    if (ask && ask.agent && ask.agent.id===active.id && ask.token!==seededAsk.current) {
+      seededAsk.current = ask.token;
+      setMsgs([greeting, {agentId:"user", time:"Just now", text:ask.prompt}]);
+      setTimeout(()=>setMsgs(p=>[...p,{agentId:active.id, time:"Just now", text:REPLIES[replyIdx++%REPLIES.length]}]),900);
+    } else {
+      setMsgs([greeting]);
+    }
+  },[active.id, ask&&ask.token]);
   function send(){if(!input.trim())return;const t=input;setInput("");setMsgs(p=>[...p,{agentId:"user",time:"Just now",text:t}]);setTimeout(()=>setMsgs(p=>[...p,{agentId:active.id,time:"Just now",text:REPLIES[replyIdx++%REPLIES.length]}]),900);}
   return (
     <div style={{flex:1,display:"grid",gridTemplateColumns:"260px 1fr",gap:14,padding:14,overflow:"hidden"}}>
@@ -1351,7 +1378,7 @@ function DirectChatView({initial}) {
         <div style={{padding:"13px 16px",borderBottom:`1px solid ${P.border}`,display:"flex",alignItems:"center",gap:11}}>
           <Avatar agent={active} size={44} glow/>
           <div style={{flex:1}}>
-            <div style={{fontSize:14,fontWeight:700,color:P.t0}}><span style={{color:active.color}}>{active.firstName}</span> Â· {active.name}</div>
+            <div style={{fontSize:14,fontWeight:700,color:P.t0}}><span style={{color:active.color}}>{active.firstName}</span> · {active.name}</div>
             <div style={{fontSize:10.5,color:active.color,fontWeight:600,letterSpacing:".06em",textTransform:"uppercase"}}>{active.role}</div>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:8,padding:"5px 9px",background:`${active.color}08`,borderRadius:7,border:`1px solid ${active.color}22`}}>
@@ -1375,8 +1402,8 @@ function DirectChatView({initial}) {
         </div>
         <div style={{padding:"11px 16px",borderTop:`1px solid ${P.border}`,background:P.bg3}}>
           <div style={{display:"flex",gap:7,background:P.bg2,border:`1.5px solid ${foc?active.color:P.border}`,borderRadius:8,padding:"7px 11px"}}>
-            <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send()} onFocus={()=>setFoc(true)} onBlur={()=>setFoc(false)} placeholder={`Message ${active.firstName}â€¦`} style={{flex:1,fontSize:12.5,background:"transparent",border:"none",outline:"none",color:P.t0,fontFamily:"inherit"}}/>
-            <button onClick={send} style={{width:28,height:28,borderRadius:7,border:"none",background:active.color,color:"#fff",cursor:"pointer",fontSize:12}}>âž¤</button>
+            <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send()} onFocus={()=>setFoc(true)} onBlur={()=>setFoc(false)} placeholder={`Message ${active.firstName}…`} style={{flex:1,fontSize:12.5,background:"transparent",border:"none",outline:"none",color:P.t0,fontFamily:"inherit"}}/>
+            <button onClick={send} style={{width:28,height:28,borderRadius:7,border:"none",background:active.color,color:"#fff",cursor:"pointer",fontSize:12}}>➤</button>
           </div>
         </div>
       </div>
@@ -1384,18 +1411,18 @@ function DirectChatView({initial}) {
   );
 }
 
-// â”€â”€â”€ LANDING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── LANDING ──────────────────────────────────────────────
 function Landing({onEnter}) {
   const featured = AGENTS.slice(0,5);
   return (
     <div style={{width:"100%",minHeight:"100vh",background:P.bg0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"60px 24px",position:"fixed",inset:0,zIndex:999,overflowY:"auto"}}>
       <GridBg o={0.5}/>
       <div style={{position:"relative",textAlign:"center",maxWidth:720}}>
-        <div style={{fontSize:10.5,fontWeight:700,letterSpacing:".22em",color:P.cyan,marginBottom:12}}>LOCKHEED MARTIN Â· RMS EP&T</div>
+        <div style={{fontSize:10.5,fontWeight:700,letterSpacing:".22em",color:P.cyan,marginBottom:12}}>LOCKHEED MARTIN · RMS EP&T</div>
         <h1 style={{margin:"0 0 4px",fontSize:"clamp(42px,7vw,76px)",fontWeight:700,lineHeight:.96,color:P.t0}}>PROGRAM GUARDIAN</h1>
-        <div style={{fontSize:16,fontWeight:500,letterSpacing:".32em",color:P.cyan,marginBottom:16}}>AI AGENT TEAM Â· HUMAN-IN-THE-LOOP</div>
+        <div style={{fontSize:16,fontWeight:500,letterSpacing:".32em",color:P.cyan,marginBottom:16}}>AI AGENT TEAM · HUMAN-IN-THE-LOOP</div>
         <p style={{margin:"0 auto 22px",fontSize:14,color:P.t2,maxWidth:520,lineHeight:1.7}}>
-          9 AI agents, each paired with a human counterpart. Larry coordinates. Peter watches cost. Ronnie tracks risk. Ivy owns schedule â€” every agent action notifies the responsible human automatically.
+          9 AI agents, each paired with a human counterpart. Larry coordinates. Peter watches cost. Ronnie tracks risk. Ivy owns schedule — every agent action notifies the responsible human automatically.
         </p>
         <div style={{display:"flex",justifyContent:"center",alignItems:"flex-end",marginBottom:26,gap:0}}>
           {featured.map((a,i)=>(
@@ -1425,15 +1452,22 @@ function Landing({onEnter}) {
   );
 }
 
-// â”€â”€â”€ APP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── APP ──────────────────────────────────────────────────
 function App() {
   const [page,        setPage]        = useState("landing");
   const [view,        setView]        = useState("command");
   const [programId,   setProgramId]   = useState("f35");
   const [chatAgent,   setChatAgent]   = useState(null);
+  const [chatAsk,     setChatAsk]     = useState(null);
   const [activeCards, setActiveCards] = useState(DEFAULT_CARDS);
   const [drawerOpen,  setDrawerOpen]  = useState(false);
   const [workflow,    setWorkflow]    = useState(null);
+
+  function askAgentAboutCard(agent, title) {
+    setChatAgent(agent);
+    setChatAsk({agent, prompt:`Walk me through the "${title}" card — what's driving these numbers, and what should I act on?`, token:Date.now()});
+    setView("chat");
+  }
 
   function triggerWorkflow(type) {
     const wf = WORKFLOWS[type];
@@ -1458,10 +1492,10 @@ function App() {
       <GridBg o={0.5}/>
       <div style={{position:"relative",display:"flex",flexDirection:"column",height:"100%",zIndex:1}}>
         <Header view={view} onNav={setView} programId={programId} setProgramId={switchProgram}/>
-        {view==="command"  && <CommandView activeCards={activeCards} onCustomize={()=>{setDrawerOpen(true);triggerWorkflow("customize");}} programId={programId} workflow={workflow} triggerWorkflow={triggerWorkflow}/>}
-        {view==="team"     && <TeamView onChat={a=>{setChatAgent(a);setView("chat");}}/>}
+        {view==="command"  && <CommandView activeCards={activeCards} onCustomize={()=>{setDrawerOpen(true);triggerWorkflow("customize");}} programId={programId} workflow={workflow} triggerWorkflow={triggerWorkflow} onAskCard={askAgentAboutCard}/>}
+        {view==="team"     && <TeamView onChat={a=>{setChatAgent(a);setChatAsk(null);setView("chat");}}/>}
         {view==="autonomy" && <AutonomyView/>}
-        {view==="chat"     && <DirectChatView initial={chatAgent}/>}
+        {view==="chat"     && <DirectChatView initial={chatAgent} ask={chatAsk}/>}
         <LiveTicker/>
       </div>
       <Drawer open={drawerOpen} onClose={()=>setDrawerOpen(false)} active={activeCards} setActive={setActiveCards}/>
@@ -1473,7 +1507,7 @@ function App() {
 try {
   const root = ReactDOM.createRoot(document.getElementById('root'));
   root.render(<App />);
-  
+
   // Wait for React to render before hiding loader
   const checkRender = setInterval(() => {
     const rootEl = document.getElementById('root');
@@ -1483,7 +1517,7 @@ try {
       if (loading) loading.style.display = 'none';
     }
   }, 100);
-  
+
   setTimeout(() => {
     clearInterval(checkRender);
     const loading = document.getElementById('loading');

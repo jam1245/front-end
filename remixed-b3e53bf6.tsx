@@ -583,7 +583,11 @@ function ProfitChart() {
 }
 
 // ─── CARD SHELL ───────────────────────────────────────────
+// Lets any card trigger "ask this card's agent about its data" without
+// threading a callback through every individual card component.
+const CardAskCtx = React.createContext(null);
 function Card({agent,title,icon,wide=false,children}) {
+  const onAsk = React.useContext(CardAskCtx);
   return (
     <div style={{background:P.panel,border:`1px solid ${P.border}`,borderRadius:RR,padding:14,position:"relative",boxShadow:SH,gridColumn:wide?"1 / -1":"auto",display:"flex",flexDirection:"column",overflow:"hidden"}}>
       <Corners c={agent.color} i={5} s={8} o={.35}/>
@@ -595,7 +599,15 @@ function Card({agent,title,icon,wide=false,children}) {
             <div style={{fontSize:9.5,color:P.t3,marginTop:1}}><span style={{color:agent.color,fontWeight:700}}>{agent.firstName}</span> · {agent.name}</div>
           </div>
         </div>
-        <div style={{width:26,height:26,borderRadius:99,background:`${agent.color}12`,border:`1px solid ${agent.color}22`,color:agent.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12}}>{icon}</div>
+        <div style={{display:"flex",alignItems:"center",gap:6}}>
+          {onAsk && (
+            <button onClick={()=>onAsk(agent,title)} title={`Ask ${agent.firstName} about ${title}`}
+              style={{width:26,height:26,borderRadius:99,background:`${agent.color}12`,border:`1px solid ${agent.color}33`,color:agent.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,cursor:"pointer",padding:0,lineHeight:1,transition:"all .14s"}}
+              onMouseEnter={e=>{e.currentTarget.style.background=agent.color;e.currentTarget.style.color="#fff";}}
+              onMouseLeave={e=>{e.currentTarget.style.background=`${agent.color}12`;e.currentTarget.style.color=agent.color;}}>⚡</button>
+          )}
+          <div style={{width:26,height:26,borderRadius:99,background:`${agent.color}12`,border:`1px solid ${agent.color}22`,color:agent.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12}}>{icon}</div>
+        </div>
       </div>
       <div style={{flex:1}}>{children}</div>
     </div>
@@ -1116,7 +1128,7 @@ function Header({view,onNav,programId,setProgramId}) {
 }
 
 // ─── VIEWS ────────────────────────────────────────────────
-function CommandView({activeCards,onCustomize,programId,workflow,triggerWorkflow}) {
+function CommandView({activeCards,onCustomize,programId,workflow,triggerWorkflow,onAskCard}) {
   const [chatMsgs,    setChatMsgs]    = useState(INIT_CHAT);
   const [notifList,   setNotifList]   = useState(INIT_NOTIFS);
   const notifIdRef = useRef(INIT_NOTIFS.length + 1);
@@ -1188,9 +1200,11 @@ function CommandView({activeCards,onCustomize,programId,workflow,triggerWorkflow
               <div style={{fontSize:14,fontWeight:600,color:P.t0,marginBottom:6}}>No cards selected</div>
               <button onClick={onCustomize} style={{fontSize:12,fontWeight:600,padding:"10px 22px",borderRadius:8,border:"none",background:P.cyan,color:"white",cursor:"pointer",marginTop:8}}>⚙ CUSTOMIZE</button>
             </div>
-          : <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-              {cards.map(c=><c.Comp key={c.id} data={data}/>)}
-            </div>
+          : <CardAskCtx.Provider value={onAskCard}>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                {cards.map(c=><c.Comp key={c.id} data={data}/>)}
+              </div>
+            </CardAskCtx.Provider>
         }
       </div>
 
@@ -1311,16 +1325,28 @@ function AutonomyView() {
   );
 }
 
-function DirectChatView({initial}) {
-  const [active, setActive] = useState(initial||AGENTS[0]);
+function DirectChatView({initial, ask}) {
+  const [active, setActive] = useState((ask&&ask.agent)||initial||AGENTS[0]);
   const [msgs,   setMsgs]   = useState([]);
   const [input,  setInput]  = useState("");
   const [foc,    setFoc]    = useState(false);
   const botRef = useRef(null);
+  const seededAsk = useRef(0);
   useEffect(()=>{botRef.current?.scrollIntoView({behavior:"smooth"});},[msgs]);
+  // When a card's ⚡ requests a question, switch to that agent.
+  useEffect(()=>{ if(ask&&ask.agent&&ask.token!==seededAsk.current) setActive(ask.agent); },[ask&&ask.token]);
+  // Build the conversation. If a fresh ask targets the current agent, seed
+  // the greeting + the auto-question + the agent's reply; otherwise just greet.
   useEffect(()=>{
-    setMsgs([{agentId:active.id, time:"Just now", text:`Hi — I'm ${active.firstName}. ${active.lead?"I coordinate the full team and have complete program visibility.":`My domain is ${active.role.toLowerCase()}.`} How can I help?`}]);
-  },[active.id]);
+    const greeting = {agentId:active.id, time:"Just now", text:`Hi — I'm ${active.firstName}. ${active.lead?"I coordinate the full team and have complete program visibility.":`My domain is ${active.role.toLowerCase()}.`} How can I help?`};
+    if (ask && ask.agent && ask.agent.id===active.id && ask.token!==seededAsk.current) {
+      seededAsk.current = ask.token;
+      setMsgs([greeting, {agentId:"user", time:"Just now", text:ask.prompt}]);
+      setTimeout(()=>setMsgs(p=>[...p,{agentId:active.id, time:"Just now", text:REPLIES[replyIdx++%REPLIES.length]}]),900);
+    } else {
+      setMsgs([greeting]);
+    }
+  },[active.id, ask&&ask.token]);
   function send(){if(!input.trim())return;const t=input;setInput("");setMsgs(p=>[...p,{agentId:"user",time:"Just now",text:t}]);setTimeout(()=>setMsgs(p=>[...p,{agentId:active.id,time:"Just now",text:REPLIES[replyIdx++%REPLIES.length]}]),900);}
   return (
     <div style={{flex:1,display:"grid",gridTemplateColumns:"260px 1fr",gap:14,padding:14,overflow:"hidden"}}>
@@ -1427,9 +1453,16 @@ export default function App() {
   const [view,        setView]        = useState("command");
   const [programId,   setProgramId]   = useState("f35");
   const [chatAgent,   setChatAgent]   = useState(null);
+  const [chatAsk,     setChatAsk]     = useState(null);
   const [activeCards, setActiveCards] = useState(DEFAULT_CARDS);
   const [drawerOpen,  setDrawerOpen]  = useState(false);
   const [workflow,    setWorkflow]    = useState(null);
+
+  function askAgentAboutCard(agent, title) {
+    setChatAgent(agent);
+    setChatAsk({agent, prompt:`Walk me through the "${title}" card — what's driving these numbers, and what should I act on?`, token:Date.now()});
+    setView("chat");
+  }
 
   function triggerWorkflow(type) {
     const wf = WORKFLOWS[type];
@@ -1454,10 +1487,10 @@ export default function App() {
       <GridBg o={0.5}/>
       <div style={{position:"relative",display:"flex",flexDirection:"column",height:"100%",zIndex:1}}>
         <Header view={view} onNav={setView} programId={programId} setProgramId={switchProgram}/>
-        {view==="command"  && <CommandView activeCards={activeCards} onCustomize={()=>{setDrawerOpen(true);triggerWorkflow("customize");}} programId={programId} workflow={workflow} triggerWorkflow={triggerWorkflow}/>}
-        {view==="team"     && <TeamView onChat={a=>{setChatAgent(a);setView("chat");}}/>}
+        {view==="command"  && <CommandView activeCards={activeCards} onCustomize={()=>{setDrawerOpen(true);triggerWorkflow("customize");}} programId={programId} workflow={workflow} triggerWorkflow={triggerWorkflow} onAskCard={askAgentAboutCard}/>}
+        {view==="team"     && <TeamView onChat={a=>{setChatAgent(a);setChatAsk(null);setView("chat");}}/>}
         {view==="autonomy" && <AutonomyView/>}
-        {view==="chat"     && <DirectChatView initial={chatAgent}/>}
+        {view==="chat"     && <DirectChatView initial={chatAgent} ask={chatAsk}/>}
         <LiveTicker/>
       </div>
       <Drawer open={drawerOpen} onClose={()=>setDrawerOpen(false)} active={activeCards} setActive={setActiveCards}/>
