@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test - Program Guardian</title>
+  <style>
+    body { 
+      margin: 0; 
+      font-family: 'Inter', sans-serif; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      min-height: 100vh; 
+      background: #EAF1FB;
+      flex-direction: column;
+      gap: 20px;
+    }
+    h1 { color: #2563EB; }
+    .status { color: #10B981; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h1>✅ GitLab Pages Deployment Working!</h1>
+  <div class="status">If you can see this, your GitLab Pages is configured correctly.</div>
+  <div style="color: #64748B;">The issue is with Babel JSX compilation taking too long.</div>
+  
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <script>
+    // Simple React test
+    const { createElement } = React;
+    const root = ReactDOM.createRoot(document.getElementById('react-test'));
+    root.render(createElement('div', { style: { color: '#2563EB', fontWeight: 'bold' } }, '✓ React is loaded and working'));
+  </script>
+  
+  <div id="react-test"></div>
+</body>
+</html>
