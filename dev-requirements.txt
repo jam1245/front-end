@@ -1,0 +1,105 @@
+## Overview
+
+This document describes the skills, tools, and responsibilities for three collaborating roles needed to evolve the **Program Guardian** demo into a production-ready, Google ADK–integrated solution:
+
+- Front-End Developer  
+- Backend Developer  
+- Agent Developer (Google ADK)
+
+All three roles work together to turn the existing GitLab Pages mock UI and standalone HTML demo into a secure, maintainable system that can run real agent workflows, integrate with enterprise data, and remain easy to extend.
+
+---
+
+## Front-End Developer Requirements
+
+### Purpose of the Role
+
+Own the user experience and UI implementation for Program Guardian, transforming the current React-based demo (GitLab Pages mock-up and standalone HTML) into a robust, accessible, and maintainable front-end that can connect to live agents and backend APIs.
+
+### Core Technical Skills
+
+- React 18 and TypeScript
+- State management and data flow for agents/programs/war room/chat
+- Data visualization using Recharts or equivalent
+- HTML/CSS and responsive layout for COMMAND, TEAM, AUTONOMY, DIRECT CHAT views
+- Accessibility, UX, and error/empty-state design
+- API integration, client-side architecture, and streaming responses
+
+### Platform and Tooling Expectations
+
+- GitLab CI/CD and GitLab Pages
+- Local build scripts and dev server setups
+- Browser dev tools, code reviews, and documentation updates
+
+### Responsibilities
+
+- Refine and extend Program Guardian UI and views
+- Integrate backend and agent services (replace mock data with APIs)
+- Ensure readability, testability, and security readiness
+
+---
+
+## Backend Developer Requirements
+
+### Purpose of the Role
+
+Design and build backend services and APIs that power Program Guardian, converting the current "client-only demo" into a secure, data-driven system that can integrate with Google ADK agents, enterprise systems, and future LM-specific data sources.
+
+### Core Technical Skills
+
+- API design and implementation (REST/WebSocket)
+- Data modeling and persistence for programs, risks, agents, conversations
+- Conceptual integration with enterprise systems (ERP, EVM, schedule tools)
+- Security, compliance, and observability (auth, logging, metrics)
+- Performance and reliability (scaling, caching, degradation strategies)
+
+### Platform and Tooling Expectations
+
+- Experience with a modern backend stack (Node.js, Python, Java, or .NET)
+- GitLab CI/CD and container-based deployment familiarity
+
+### Responsibilities
+
+- Replace mock client-side data with service-backed endpoints
+- Provide interfaces for agent invocation and result retrieval
+- Persist and expose data for governance, audit, and dashboards
+
+---
+
+## Agent Developer Requirements (Google ADK)
+
+### Purpose of the Role
+
+Design, implement, and orchestrate AI agents using Google ADK that embody the nine Program Guardian roles and workflows, and integrate them with backend services and the Program Guardian UI.
+
+### Core Technical Skills
+
+- Google ADK and agent-oriented development
+- Tool and API integration for metrics, documents, and write-backs
+- Conversation and human-in-the-loop flows honoring autonomy levels
+- Safety, guardrails, governance, and audit logging
+- Context management, retrieval, and summarization
+
+### Platform and Tooling Expectations
+
+- Hands-on Google ADK (or similar) experience
+- Version-controlled prompts, agents, and orchestration logic
+- Secure handling of keys/secrets and environment separation
+
+### Responsibilities
+
+- Implement the nine Program Guardian personas as ADK agents
+- Orchestrate Larry as the lead router agent
+- Connect agents to UI/backend for queries, responses, and events
+- Operationalize agents with autonomy controls, telemetry, and reviews
+
+---
+
+## How These Roles Work Together
+
+- Front-End Developer: owns UX and integrates with APIs
+- Backend Developer: provides secure data and control surfaces
+- Agent Developer (Google ADK): designs and governs agent behaviors
+
+Together, these roles evolve the current GitLab Pages mock UI into a production-capable, ADK-backed Program Guardian system that demonstrates real value for defense program management.
+

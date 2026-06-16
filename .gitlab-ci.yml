@@ -1,0 +1,13 @@
+pages:
+  stage: deploy
+  script:
+    - echo "Deploying to GitLab Pages..."
+    - mkdir -p public
+    # Deploy standalone HTML as index.html (eliminates runtime Babel compilation)
+    - cp program-guardian-standalone.html public/index.html
+    - echo "Deployment complete!"
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"

@@ -2,7 +2,7 @@
 
 **AI Agent Team for Defense Program Management**
 
-🚀 **Live Demo:** `https://[your-username].gitlab.io/front-end` (after deployment)
+🚀 **Live Demo:** `https://front-end-f00a27.pages.gitlab.us.lmco.com/`
 
 ## Overview
 
@@ -26,6 +26,14 @@ start program-guardian-standalone.html
 ```
 
 ### Option 2: GitLab Pages Deployment
+```powershell
+# Commit and push changes (GitLab CI will auto-deploy)
+git add .
+git commit -m "Deploy Program Guardian to GitLab Pages"
+git push origin main
+```
+
+The `.gitlab-ci.yml` automatically deploys the standalone HTML to GitLab Pages.
 See [DEPLOYMENT.md](DEPLOYMENT.md) for complete instructions.
 
 ## Features
@@ -72,14 +80,16 @@ Customizable data visualization cards covering:
 
 ```
 front-end/
-├── remixed-b3e53bf6.tsx        # Source React application (1,427 lines)
-├── program-guardian-demo.html  # Standalone HTML template
-├── index.html                  # GitLab Pages entry point
-├── app.js                      # Application code for GitLab Pages
-├── .gitlab-ci.yml              # CI/CD configuration
-├── build-standalone.ps1        # Build script for standalone HTML
-├── DEPLOYMENT.md               # Deployment guide
-└── README.md                   # This file
+├── remixed-b3e53bf6.tsx               # Source React application (TypeScript)
+├── program-guardian-standalone.html   # Self-contained HTML (deployed to GitLab Pages)
+├── index.html                         # Local development entry point
+├── app.js                             # Compiled application code
+├── .gitlab-ci.yml                     # CI/CD configuration (auto-deploys standalone)
+├── build-standalone.ps1               # Build script for standalone HTML
+├── prepare-gitlab-pages.ps1           # Prepare app.js from TypeScript source
+├── serve.ps1                          # Local development server
+├── DEPLOYMENT.md                      # Deployment guide
+└── README.md                          # This file
 ```
 
 ## Getting started
