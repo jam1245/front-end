@@ -166,8 +166,15 @@ runtime emits `React.createElement(...)`, which works directly with the global
 
 - **Always run `python3 build.py` after editing source.** The browser runs
   `app.compiled.js`, not `app.js`.
-- `program-guardian-standalone.html` and the PowerShell `*.ps1` scripts are
-  **legacy / unused** by the current deploy. Safe to delete to avoid confusion.
+- **Opening locally / sharing one file:** use
+  `program-guardian-standalone.html` — `build.py` regenerates it with React,
+  ReactDOM, prop-types, Recharts, and the compiled app all **inlined into one
+  HTML file**. It works by double-clicking (`file://`), over email, or from a
+  USB stick — no `vendor/` folder, no server, no internet. (The old
+  `program-guardian-demo.html` was a broken, never-completed template and has
+  been deleted.)
+- The PowerShell `*.ps1` scripts are **legacy / unused** by the current
+  deploy. Safe to delete to avoid confusion.
 - The committed `vendor/` adds ~3 MB to the repo (mostly `babel.min.js`, which
   is build-time only). That is intentional — it's the price of zero external
   dependencies. `babel.min.js` could be moved out of `vendor/` if you prefer it
