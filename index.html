@@ -5,134 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Program Guardian - AI Agent Team Demo</title>
   <meta name="description" content="Program Guardian - AI Agent Team for Defense Program Management. 9 AI agents with human-in-the-loop architecture.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /* System font stack only — no external font CDN (works on restricted networks). */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; overflow: hidden; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; overflow: hidden; }
     #root { width: 100%; height: 100vh; }
-    #loading { 
-      position: fixed; 
-      inset: 0; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      background: #EAF1FB; 
-      font-family: 'Inter', sans-serif;
-      flex-direction: column;
-      gap: 20px;
-      z-index: 9999;
+    #loading {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: #EAF1FB; flex-direction: column; gap: 20px; z-index: 9999;
     }
-    #loading-text { 
-      font-size: 18px; 
-      color: #2563EB; 
-      font-weight: 600;
-      letter-spacing: 0.1em;
-    }
+    #loading-text { font-size: 18px; color: #2563EB; font-weight: 600; letter-spacing: 0.1em; }
     .spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid #E8F0FA;
-      border-top-color: #2563EB;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+      width: 50px; height: 50px;
+      border: 4px solid #E8F0FA; border-top-color: #2563EB;
+      border-radius: 50%; animation: spin 1s linear infinite;
     }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
   <div id="loading">
     <div class="spinner"></div>
     <div id="loading-text">LOADING PROGRAM GUARDIAN...</div>
-    <div id="loading-subtext" style="font-size: 11px; color: #64748B; margin-top: 10px; letter-spacing: 0.05em;">Compiling application...</div>
+    <div id="loading-subtext" style="font-size: 11px; color: #64748B; margin-top: 10px; letter-spacing: 0.05em;">Starting application...</div>
   </div>
   <div id="root"></div>
 
-  <!-- React, ReactDOM, PropTypes, and Recharts from CDN -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <!-- Recharts UMD requires a global PropTypes; must load before Recharts -->
-  <script crossorigin src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
-  <script crossorigin src="https://unpkg.com/recharts@2.15.0/umd/Recharts.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- All dependencies are vendored locally (relative paths) so nothing is
+       fetched from the internet. Order matters: React + PropTypes before
+       Recharts; everything before the precompiled app. -->
+  <script src="vendor/react.production.min.js"></script>
+  <script src="vendor/react-dom.production.min.js"></script>
+  <script src="vendor/prop-types.min.js"></script>
+  <script src="vendor/Recharts.js"></script>
 
-  <!-- Wait for all libraries to load, then load app -->
+  <!-- Precompiled application (no runtime Babel needed). Build with build.py. -->
+  <script src="app.compiled.js"></script>
+
+  <!-- Safety net: surface an error if the app never mounts. -->
   <script>
-    // Ensure all CDN libraries are loaded before loading app.js
-    function checkLibraries() {
-      if (typeof React !== 'undefined' &&
-          typeof ReactDOM !== 'undefined' &&
-          typeof Recharts !== 'undefined' &&
-          typeof Babel !== 'undefined') {
-        // All libraries loaded. Babel/standalone only auto-transpiles
-        // text/babel scripts present at page load, so fetch, transform,
-        // and execute app.js explicitly.
-        fetch('app.js')
-          .then(function (res) { return res.text(); })
-          .then(function (src) {
-            var compiled = Babel.transform(src, { presets: ['react'] }).code;
-            (0, eval)(compiled);
-          })
-          .catch(function (err) {
-            console.error('Failed to load app.js:', err);
-            var loadingText = document.getElementById('loading-text');
-            if (loadingText) {
-              loadingText.textContent = 'ERROR: ' + err.message;
-              loadingText.style.color = '#EF4444';
-            }
-          });
-      } else {
-        // Check again in 100ms
-        setTimeout(checkLibraries, 100);
-      }
-    }
-    
-    // Start checking after a brief delay
-    setTimeout(checkLibraries, 100);
-  </script>
-  
-  <!-- Monitor for successful render -->
-  <script>
-    // Update loading text to show progress
-    setTimeout(() => {
-      const subtext = document.getElementById('loading-subtext');
-      if (subtext && document.getElementById('root').children.length === 0) {
-        subtext.textContent = 'Compiling JSX (this may take 10-15 seconds)...';
-      }
-    }, 2000);
-    
-    // Check every 500ms if React has rendered
-    const checkInterval = setInterval(() => {
-      const root = document.getElementById('root');
-      if (root && root.children.length > 0) {
-        clearInterval(checkInterval);
-        const loading = document.getElementById('loading');
-        if (loading) {
-          loading.style.transition = 'opacity 0.3s';
-          loading.style.opacity = '0';
-          setTimeout(() => loading.style.display = 'none', 300);
-        }
-      }
-    }, 500);
-    
-    // Timeout after 30 seconds with error message
-    setTimeout(() => {
-      const root = document.getElementById('root');
+    setTimeout(function () {
+      var root = document.getElementById('root');
       if (!root || root.children.length === 0) {
-        clearInterval(checkInterval);
-        const loadingText = document.getElementById('loading-text');
-        const subtext = document.getElementById('loading-subtext');
-        if (loadingText) {
-          loadingText.textContent = 'Loading timeout - please refresh';
-          loadingText.style.color = '#EF4444';
-        }
-        if (subtext) {
-          subtext.textContent = 'Check browser console (F12) for errors';
-        }
+        var lt = document.getElementById('loading-text');
+        var st = document.getElementById('loading-subtext');
+        if (lt) { lt.textContent = 'Loading failed - please refresh'; lt.style.color = '#EF4444'; }
+        if (st) { st.textContent = 'Check the browser console (F12) for errors'; }
       }
-    }, 30000);
+    }, 15000);
   </script>
 </body>
 </html>

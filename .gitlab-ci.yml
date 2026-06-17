@@ -1,11 +1,14 @@
 pages:
   stage: deploy
   script:
-    - echo "Deploying to GitLab Pages..."
+    - echo "Deploying self-contained Program Guardian to GitLab Pages..."
     - mkdir -p public
-    # Deploy standalone HTML as index.html (eliminates runtime Babel compilation)
-    - cp program-guardian-standalone.html public/index.html
-    - echo "Deployment complete!"
+    # Fully self-contained: no external CDN/font dependencies (works behind
+    # restricted/internal networks). All assets are committed in the repo.
+    - cp index.html public/index.html
+    - cp app.compiled.js public/app.compiled.js
+    - cp -r vendor public/vendor
+    - echo "Deployment complete."
   artifacts:
     paths:
       - public

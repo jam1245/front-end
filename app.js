@@ -1,5 +1,5 @@
 // Program Guardian - Application Code
-// Auto-generated from remixed-b3e53bf6.tsx
+// Auto-generated from remixed-b3e53bf6.tsx by build.py — do not edit by hand.
 
 const { useState, useMemo, useRef, useEffect } = React;
 const { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, BarChart, Bar, Cell } = Recharts;
